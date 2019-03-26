@@ -223,10 +223,10 @@
       }
     }
     &__icon-popover {
-      max-width: 370px;
+      max-width: 500px;
     }
     &__icon-list {
-      max-height: 180px;
+      // max-height: 280px;
       padding: 0;
       margin: -8px 0 0 -8px;
       > .el-button {

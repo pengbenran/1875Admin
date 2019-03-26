@@ -1,6 +1,6 @@
 <template>
   <div class="membershipManagerment">
-    这是推荐师管理列表
+    这是会员等级界面
   </div>
 </template>
 
