@@ -2,27 +2,26 @@
   <div class="membershipManagerment">
     <el-row :gutter="24">
       <el-col :span="24">
-        <el-button type="success"  icon="el-icon-plus" @click="AddMenberLv">等级新增</el-button>
+        <el-button type="success"  icon="el-icon-plus" @click="AddGoodsCat">分类新增</el-button>
         <el-button type="success"  icon="el-icon-circle-close" :disabled="multipleSelection.length == 0" @click="DeleteBatch">批量删除</el-button>
       </el-col>
       <el-col :span="24" v-loading="loading"  element-loading-text="正在查询中。。。" >
-        <el-table ref="multipleTable" :data="menberLvList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table ref="multipleTable" :data="GoodsCatList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="name" label="等级名称" width="120"></el-table-column>
-          <el-table-column prop="defaultLv" label="是否为默认等级" width="120">
+          <el-table-column align="center"  prop="name" label="分类名称"></el-table-column>
+          <el-table-column align="center"  prop="root" label="是否为根级">
             <template slot-scope="scope">
-                <el-tag :type="scope.row.defaultLv == 1 ? 'success' : 'error' ">{{ scope.row.defaultLv == 1 ? '是' : '否' }}</el-tag>
+                <el-tag :type="scope.row.root == 1 ? 'success' : 'error' ">{{ scope.row.root == 1 ? '是' : '否' }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="discount" label="折扣大小" ></el-table-column>
-          <el-table-column prop="rank" label="等级大小" ></el-table-column>
-          <el-table-column prop="type" label="升级方式" >
+          <el-table-column align="center"  prop="parentId" label="父级Id" ></el-table-column>
+          <el-table-column align="center"  prop="sort" label="排序" ></el-table-column>
+          <el-table-column align="center"  prop="showed" label="是否展示" >
             <template slot-scope="scope">
-                <el-tag :type="scope.row.type == 1 ? 'success' : 'error' ">{{ scope.row.type == 1 ? '消费金额' : '购物数量' }}</el-tag>
+                <el-tag :type="scope.row.showed == 1 ? 'success' : 'error' ">{{ scope.row.showed == 1 ? '是' : '否' }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="upgradePoint" label="达到等级所需积分" ></el-table-column>
-          <el-table-column prop="givePoint" label="达到等级赠送积分" ></el-table-column>
+          <el-table-column align="center"  prop="img" label="图片" ></el-table-column>
           <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
              <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="handlEdit(scope.$index,scope.row)">编辑</el-button>
@@ -30,17 +29,17 @@
              </template>
           </el-table-column>
         </el-table>
-        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="GetMenberLvList" />
+        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="GetGoodsCatList" />
       </el-col>
     </el-row>
 
-    <DiaLogShow ref="DiaLogShow"/>
+    <DiaLogShow ref="DiaLogShow" :GoodsCatList='GoodsCatList'/>
   </div>
 </template>
 
 <script>
-import API from '@/api/member'
-import DiaLogShow from './Component/MenberLvDialog'
+import API from '@/api/goods'
+import DiaLogShow from './Component/GoodsCatDialog'
 import Pagination from '@/components/Pagination'
 
   export default {
@@ -48,7 +47,7 @@ import Pagination from '@/components/Pagination'
     data () {
       return {
         loading:false,
-        menberLvList:[],
+        GoodsCatList:[],
         AddDialogShow:false,
         listQuery:{
           page: 1,
@@ -59,19 +58,19 @@ import Pagination from '@/components/Pagination'
       }
     },
     mounted () {
-       this.GetMenberLvList();
+       this.GetGoodsCatList();
     },
     methods: {
 
       //获取所有的等级
-      GetMenberLvList(){
+      GetGoodsCatList(){
         let that = this;
-        API.getMenberLvList(Object.assign({},that.listQuery)).then(res => {
+        API.GetGoodsCat(Object.assign({},that.listQuery)).then(res => {
           if(res != undefined){
-             that.menberLvList = res.rows
+             that.GoodsCatList = res.rows
              that.total = res.total
           }else{
-           
+             that.$message.error('分类请求失败');
           }
         }).catch(err =>{})
       },
@@ -82,10 +81,10 @@ import Pagination from '@/components/Pagination'
         that.loading = true;
         this.$confirm('此操作将永久删除该条数据, 是否继续?', '提示', {confirmButtonText: '确定',cancelButtonText: '取消', type: 'warning'
         }).then(() => {
-            API.deleteMenberLv({lvId:row.lvId}).then(res => {
+            API.DeleteGoodsCat({catId:row.catId}).then(res => {
               if(res.code == 0){
                   this.$message({ message: '删除成功', type: 'success'});
-                  that.GetMenberLvList();
+                  that.GetGoodsCatList();
               }else{
                   this.$message.error('删除失败');
               }
@@ -106,13 +105,13 @@ import Pagination from '@/components/Pagination'
         let arr = [];
         that.loading = true;
         that.multipleSelection.map(res => {
-          arr.push(res.lvId)
+          arr.push(res.catId)
         })
         this.$confirm('此操作将永久删除该条数据, 是否继续?', '提示', {confirmButtonText: '确定',cancelButtonText: '取消', type: 'warning'
         }).then(() => {
-            API.batchDeleteMenberLv({ids:arr.join(',')}).then(res => {
+            API.BatchRemoveGoodsCat({ids:arr.join(',')}).then(res => {
               if(res.code == 0){
-                that.GetMenberLvList();
+                that.GetGoodsCatList();
                 this.$message({ message: '批量删除成功', type: 'success'});
               }else{
                 this.$message.error('删除失败');
@@ -129,8 +128,8 @@ import Pagination from '@/components/Pagination'
 
       },
 
-      //添加等级
-      AddMenberLv(){
+      //添加商品分类
+      AddGoodsCat(){
         let that = this;
         this.$refs.DiaLogShow.DiaLogShow(true)
       },

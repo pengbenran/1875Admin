@@ -127,8 +127,8 @@
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
-            this.dataList = data.page.list
-            this.totalPage = data.page.totalCount
+            this.dataList = data.page.rows
+            this.totalPage = data.page.totalPage
           } else {
             this.dataList = []
             this.totalPage = 0
