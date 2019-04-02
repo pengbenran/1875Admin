@@ -47,7 +47,10 @@
           },
           ImgClick(){
           	this.$emit('ImgClick');
-          }
+          },
+           handleSelectionChange(){
+
+      },
 		}
 	}
 </script>

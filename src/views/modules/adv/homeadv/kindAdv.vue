@@ -27,7 +27,7 @@
       id="avatarCrop"
       ref="cropper"
       @cropper-success="cropperSuccessHandle"
-      :proportion="proportion"
+      :proportion="proportion" :type="type"
       ></cropper>
       <span slot="footer" class="dialog-footer">
         <el-button @click="cancelCropper">取 消</el-button>
@@ -47,6 +47,7 @@
       return {
        formLabelWidth: "120px",
        proportion: 0.59,
+       type:4,
        btnloadingVisible: false,
        showCropper: false,
        setForm: {

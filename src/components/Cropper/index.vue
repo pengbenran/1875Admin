@@ -58,11 +58,13 @@
 <script>
   import $ from 'jquery'
   import 'cropper/dist/cropper.js'
+  import Api_img from "@/api/api_lib"
   export default {
 
     props:{
       id:String,
-      proportion:Number
+      proportion:Number,
+      type:Number
     },
     data(){
       return {
@@ -302,25 +304,17 @@
         }
         var imgFile=new File([u8arr], 'aa.jpg', {type:mime});
         data.append('file',imgFile)      
-        data.append('code',1)
-        
-        // console.log("这是个是啥")
-        // Fun_img.GetImgtest(data).then(function(res){
-        //   console.log("查看上传",res)
-        //   _this.$emit('cropper-success',res);
-        // })
-        
+        data.append('type',2)
         if(imgFile.size/1024 < 650){
-          // Fun_img.GetImgfile(data).catch(err => {
-          //   this.$notify.error({
-          //     title:'上传失败',
-          //     message:'上传失败请重新上传'
-          //   })
-          //   _this.$emit('cropper-success',err);
-          // }).then(function(res){
-          //   console.log("查看上传",res)
-          //   _this.$emit('cropper-success',res);
-          // })
+          Api_img.imageUpload(data).catch(err => {
+            this.$notify.error({
+              title:'上传失败',
+              message:'上传失败请重新上传'
+            })
+            _this.$emit('cropper-success',err);
+          }).then(function(res){
+            _this.$emit('cropper-success',res);
+          })
         }else{
           this.$notify.error({
             title:'错误',
@@ -328,9 +322,6 @@
           })
           _this.$emit('cropper-success',undefined);
         }
-
-
-        
 
         // $.ajax(url, {
         //   type: 'post',

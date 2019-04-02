@@ -58,6 +58,9 @@
 			}
 		},
     methods:{
+      handleSelectionChange(){
+
+      },
       showAddDialog(){
             let that = this;
             that.addFormVisible = true;

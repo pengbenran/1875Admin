@@ -39,7 +39,7 @@
       <!-- 图片裁剪 -->
       <div class="app-main-content" >
         <el-dialog :visible.sync="showCropper" title="封面裁图" width="70%">
-          <cropper id="avatarCrop" ref="cropper" @cropper-success="cropperSuccessHandle" :proportion="proportion"></cropper>
+          <cropper id="avatarCrop" ref="cropper" @cropper-success="cropperSuccessHandle" :proportion="proportion" :type="type"></cropper>
           <span slot="footer" class="dialog-footer">
             <el-button @click="cancelCropper">取 消</el-button>
             <el-button type="primary" @click="toCropper" :disabled='btnLoading'><i class="el-icon-loading" v-if="btnLoading" ></i> 确 定</el-button>
@@ -55,6 +55,7 @@
   import cropper from '@/components/Cropper/index'
   import bannerEditDialog from './components/bannerEditDialog'
   import bannerAddDialog from './components/bannerAddDialog'
+  import Api_adv from '@/api/adv'
   export default {
     data () {
       return {
@@ -72,14 +73,24 @@
         },
         showCropper:false,
         proportion:2.8,
+        type:2,
         btnLoading:false,
       }
     },
     mounted () {
-      
+      let that=this
+      that.getHomeBanner()
     },
     components: { cropper,bannerEditDialog,bannerAddDialog},
     methods: {
+      // 获取首页banner
+      getHomeBanner(){
+        let params={}
+        params.type=2
+        Api_adv.HomeBannerList(params).then(function(res){
+          console.log(res)
+        })
+      },
           //编辑
           showEditDialog(index,row){
             let that = this;
@@ -106,14 +117,9 @@
              if(data != undefined){
               this.showCropper = false
               this.btnLoading = false;
-              // this.form.src = data.msg
-              if(this.caseIndex == 1){
-                this.imgList[this.selectIndex] = data.msg
-              // this.imgList.push(data.msg)
-              }else if (this.caseIndex == 2) {
-               this.tjImgList[this.selectIndex] = data.msg
+              this.editFrom.img = data.url
               }
-              }else{
+             else{
                 this.$message.error('抱歉，您的网络错误');
               }
          },

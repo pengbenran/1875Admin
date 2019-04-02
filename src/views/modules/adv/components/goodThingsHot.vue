@@ -37,7 +37,7 @@
       <!-- 图片裁剪 -->
       <div class="app-main-content" >
         <el-dialog :visible.sync="showCropper" title="封面裁图" width="70%">
-          <cropper id="avatarCrop" ref="cropper" @cropper-success="cropperSuccessHandle" :proportion="proportion"></cropper>
+          <cropper id="avatarCrop" ref="cropper" @cropper-success="cropperSuccessHandle" :proportion="proportion" :type="type"></cropper>
           <span slot="footer" class="dialog-footer">
             <el-button @click="cancelCropper">取 消</el-button>
             <el-button type="primary" @click="toCropper" :disabled='btnLoading'><i class="el-icon-loading" v-if="btnLoading" ></i> 确 定</el-button>
@@ -119,6 +119,7 @@
         },
         showCropper:false,
         proportion:2.8,
+        type:4,
         btnLoading:false,
       }
     },

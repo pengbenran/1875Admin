@@ -17,6 +17,7 @@
     "axios": "0.17.1",
     "babel-plugin-component": "0.10.1",
     "babel-polyfill": "6.26.0",
+    "cropper": "^4.0.0",
     "element-ui": "2.3.2",
     "gulp": "3.9.1",
     "gulp-concat": "2.6.1",
@@ -30,6 +31,7 @@
     "svg-sprite-loader": "3.7.3",
     "vue": "2.5.2",
     "vue-cookie": "1.1.4",
+    "vue-count-to": "^1.0.13",
     "vue-router": "3.0.1",
     "vuex": "3.0.1"
   },
