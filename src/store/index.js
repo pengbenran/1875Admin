@@ -3,13 +3,15 @@ import Vuex from 'vuex'
 import cloneDeep from 'lodash/cloneDeep'
 import common from './modules/common'
 import user from './modules/user'
+import good from './modules/good'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
     common,
-    user
+    user,
+    good
   },
   mutations: {
     // 重置vuex本地储存状态
