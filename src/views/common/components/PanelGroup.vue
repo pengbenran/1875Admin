@@ -3,7 +3,8 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
         <div class="card-panel-icon-wrapper icon-people">
-          <!-- <svg-icon icon-class="icon-svg icon-svg__admin" :name="system" /> -->
+          <!-- <icon-svg name="shouye" class="site-sidebar__menu-icon"></icon-svg> -->
+          <icon-svg name="admin" class-name="card-panel-icon"/>
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">会员总数</div>
@@ -14,7 +15,7 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('messages')">
         <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="eye" class-name="card-panel-icon" />
+          <icon-svg name="people" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">推荐师总数</div>
@@ -25,7 +26,7 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('purchases')">
         <div class="card-panel-icon-wrapper icon-money">
-          <svg-icon icon-class="money" class-name="card-panel-icon" />
+          <icon-svg name="money" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">订单总金额</div>
@@ -36,7 +37,7 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('shoppings')">
         <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="shopping" class-name="card-panel-icon" />
+          <icon-svg name="shopping" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">订单数量</div>

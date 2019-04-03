@@ -12,28 +12,30 @@
       </el-col>
       <!--列表-->
       <el-table :data="kindList" highlight-current-row style="width: 100%;">
-        <el-table-column label="编号" prop="kindId">
+        <el-table-column label="编号" prop="id">
+        </el-table-column>
+        <el-table-column label="排序" prop="sorts">
         </el-table-column>
         <el-table-column  label="分类背景图片"  width="300">
           <template slot-scope="scope">
-            <img  :src="scope.row.img" width="200" style="margin-left: 8px">
+            <img  :src="scope.row.url" width="200" style="margin-left: 8px">
           </template>
         </el-table-column>
-        <el-table-column prop="kindName" label="分类名称">
+        <el-table-column prop="catName" label="分类名称">
         </el-table-column>
-        <el-table-column prop="kindNameColor" label="分类字体颜色">
+        <el-table-column prop="fontColor" label="分类字体颜色">
         </el-table-column>
-        <el-table-column label="操作" :width="200">
+        <el-table-column label="操作" :width="250">
           <template slot-scope="scope">
             <el-button size="mini" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="removeMemberLevel(scope.$index,scope.row)">删除</el-button>
+            <el-button size="mini" type="danger" @click="removecatBackLevel(scope.$index,scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <!-- 新增模态框 -->
-      <explosiveAddDialog :addFrom='addFrom' ref="explosiveAddDialog"></explosiveAddDialog>
+        <!-- 新增模态框 -->
+      <explosiveAddDialog :addFrom='addFrom' ref="explosiveAddDialog" @ImgClick="ImgClick" @catBackGroundList="catBackGroundList"></explosiveAddDialog>
       <!-- 编辑模态框 -->
-      <explosiveEditDialog :editFrom='editFrom' ref="explosiveEditDialog"></explosiveEditDialog>
+      <explosiveEditDialog :editFrom='editFrom' ref="explosiveEditDialog" @ImgClick="ImgClick" @catBackGroundList="catBackGroundList"></explosiveEditDialog>
       <!-- 图片裁剪 -->
       <div class="app-main-content" >
         <el-dialog :visible.sync="showCropper" title="封面裁图" width="70%">
@@ -51,30 +53,31 @@
 
 <script>
   import cropper from '@/components/Cropper/index'
-  import explosiveAddDialog from './components/explosive/explosiveAddDialog'
+   import explosiveAddDialog from './components/explosive/explosiveAddDialog'
   import explosiveEditDialog from './components/explosive/explosiveEditDialog'
+  import Api_adv from '@/api/adv'
   export default {
     data () {
       return {
-        kindList:[
-        {kindId:1,kindName:'美食大咖',img:'/static/img/hot1bg.jpg',kindNameColor:'#F10D0D'},
-        {kindId:2,kindName:'高端玩家',img:'/static/img/hot1bg.jpg',kindNameColor:'#2C0505'},
-        {kindId:3,kindName:'女神范儿',img:'/static/img/hot1bg.jpg',kindNameColor:'#322E2E'}],
+        kindList:[],
         editFrom:{},
         addFrom:{
-          kindId:'',
-          kindName:'',
-          img:'',
-          kindNameColor:''
+          catName:'',
+          type:2,
+          url:'',
+          fontColor:'',
+          sorts:''
         },
         showCropper:false,
         proportion:2.8,
         type:4,
         btnLoading:false,
+        formLabelWidth:'120px'
       }
     },
     mounted () {
-      
+      let that=this
+      that.catBackGroundList()
     },
     components: { cropper,explosiveEditDialog,explosiveAddDialog},
     methods: {
@@ -94,6 +97,15 @@
              this.btnLoading = true;
              this.$refs.cropper.submit();
            },
+           catBackGroundList(){
+            let params={}
+            let that=this
+            that.addFrom={catName:'',type:2,url:'', fontColor:'',sorts:''},
+            params.type=2
+            Api_adv.catBackGroundList(params).then(function(res){
+              that.kindList=res.rows
+            })
+           },
           cancelCropper(){
             this.showCropper = false
             this.$refs.cropper.cropDone();
@@ -104,17 +116,24 @@
              if(data != undefined){
               this.showCropper = false
               this.btnLoading = false;
-              // this.form.src = data.msg
-              if(this.caseIndex == 1){
-                this.imgList[this.selectIndex] = data.msg
-              // this.imgList.push(data.msg)
-              }else if (this.caseIndex == 2) {
-               this.tjImgList[this.selectIndex] = data.msg
-              }
-              }else{
-                this.$message.error('抱歉，您的网络错误');
+              this.addFrom.url = data.url
+              this.editFrom.url=data.url
               }
          },
+          // 删除首页banner
+          removecatBackLevel(index,row){
+            let that=this
+            Api_adv.catBackGroundDel(row).then(function(res){
+              if(res.code==0){
+                that.$message.success({
+                  showClose: true,
+                  message: "删除成功",
+                  duration: 2000
+                }); 
+                that.catBackGroundList()
+              }
+            })
+          },
          ImgClick(){
             this.showCropper = true;
          }  

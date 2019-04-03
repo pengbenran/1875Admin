@@ -22,13 +22,17 @@
 		props: ['goodsListData'],
 		data () {
 			return {
-			 goodsConnectFormVisible:false
+			 goodsConnectFormVisible:false,
+       formLabelWidth:'120px'
 			}
 		},
     methods:{
       showGoodConnectDialog(){
           let that = this;
           that.goodsConnectFormVisible = true;
+      },
+      handleSelectionChange(){
+
       }
     }
 	}

@@ -48,7 +48,6 @@
         </el-dialog>
     </section>
     <!--商品分类添加-->
-
     <section>
         <el-dialog title="商品分类编辑" :visible.sync="EditShow" >
         <el-form :model="EdiData"  :rules="EdiDatarules"  ref="EditruleForm">
