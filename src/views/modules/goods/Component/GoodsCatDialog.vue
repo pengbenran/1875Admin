@@ -56,12 +56,22 @@
                 <el-input v-model="EdiData.name" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="是否为根级" :label-width="formLabelWidth"  prop="root">
-                <el-radio v-model="EdiData.root" label="1">是</el-radio>
-                <el-radio v-model="EdiData.root" label="2">否</el-radio>
+                <el-radio v-model="EdiData.root" label="1"  @change = 'EditchangeRadio'>是</el-radio>
+                <el-radio v-model="EdiData.root" label="2"  @change = 'EditchangeRadio'>否</el-radio>
                 <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert>
             </el-form-item>
-            <el-form-item label="父级Id" :label-width="formLabelWidth" prop="parentId">
-                <el-input v-model="EdiData.parentId" placeholder="请输入内容" autocomplete="off"></el-input>
+            <el-form-item label="父级Id" :label-width="formLabelWidth" prop="parentId"  v-if="EdiData.root == 2">
+                <!-- <el-input v-model="EdiData.parentId" placeholder="请输入内容" autocomplete="off"></el-input> -->
+                <el-select v-model="EdiData.parentId" >
+                    <el-option
+                        v-for="item in GoodsCatList"
+                        :key="item.catId"
+                        :label="item.name"
+                        :value="item.catId">
+                        <span style="float: left">{{ item.name }}</span>
+                        <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="排序" :label-width="formLabelWidth" prop="sort">
                 <el-input v-model="EdiData.sort" placeholder="请输入内容" autocomplete="off"></el-input>
@@ -107,7 +117,10 @@ export default {
            parentId:'',
            root:'2'
            },
-           EdiData:{},
+           EdiData:{
+            parentId:'',
+            root:'2'
+           },
            formLabelWidth:'120px',
            AddDatarules:{
              name:[
@@ -200,6 +213,11 @@ export default {
             this.AddData.root == 1 ? this.AddData.parentId = '0' : this.AddData.parentId = ''
         },
 
+        //编辑选择父级
+        EditchangeRadio(){
+            this.EdiData.root == 1 ? this.EdiData.parentId = '0' : this.EdiData.parentId = ''           
+        },
+
         //添加显示
         DiaLogShow(val){
             this.AddShow = val;
@@ -209,6 +227,7 @@ export default {
         EditDiaLogShow(val,row){
             this.EditShow = val;
             row.root = row.root+''
+            row.parentId = row.parentId*1
             row.showed = row.showed+''
             this.EdiData = Object.assign({},row);
             console.log(this.EdiData,"你好世界阿萨德")

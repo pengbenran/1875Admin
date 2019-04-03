@@ -2,7 +2,7 @@
     <div>
         <div class="app-main-content" >
             <el-dialog :visible.sync="showCropper" title="封面裁图" width="70%">
-            <cropper id="avatarCrop" ref="cropper" @cropper-success="cropperSuccessHandle" :proportion="proportion"></cropper>
+            <cropper id="avatarCrop" ref="cropper" @cropper-success="cropperSuccessHandle" :proportion="proportion" :type='type'></cropper>
                 <span slot="footer" class="dialog-footer">
                     <el-button @click="cancelCropper">取 消</el-button>
                     <el-button type="primary" @click="toCropper" :disabled='loading'><i class="el-icon-loading" v-if="loading" ></i> 确 定</el-button>
@@ -19,6 +19,10 @@ export default {
     components:{cropper},
     props:{
         proportion:{
+            type:Number,
+            default:1
+        },
+        type:{
             type:Number,
             default:1
         }
@@ -45,7 +49,9 @@ export default {
         this.showCropper = false;
         this.loading = false;
         console.log("图片上传的信息",data)
-        // this.Set_thumbnailValue()
+        if(data.code == 0){
+          this.$emit('GetDataImg',data.url)
+        }
       },
       
       //隐藏

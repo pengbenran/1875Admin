@@ -2,8 +2,16 @@
   <div class="membershipManagerment">
     <el-row :gutter="24">
       <el-col :span="24">
-        <el-button type="success"  icon="el-icon-plus" @click="AddGoodsCat">分类新增</el-button>
-        <el-button type="success"  icon="el-icon-circle-close" :disabled="multipleSelection.length == 0" @click="DeleteBatch">批量删除</el-button>
+        <el-col :span="20">
+          <el-button type="success"  icon="el-icon-plus" @click="AddGoodsCat">分类新增</el-button>
+          <el-button type="success"  icon="el-icon-circle-close" :disabled="multipleSelection.length == 0" @click="DeleteBatch">批量删除</el-button>
+        </el-col>
+        <el-col :span="4">
+          <el-select v-model="selectOptions" clearable placeholder="请选择">
+              <el-option v-for="item in tagarr" :key="item.root" :label="item.name" :value="item.root"></el-option>
+          </el-select>
+             
+        </el-col>
       </el-col>
       <el-col :span="24" v-loading="loading"  element-loading-text="正在查询中。。。" >
         <el-table ref="multipleTable" :data="GoodsCatList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
@@ -14,7 +22,7 @@
                 <el-tag :type="scope.row.root == 1 ? 'success' : 'error' ">{{ scope.row.root == 1 ? '是' : '否' }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column align="center"  prop="parentId" label="父级Id" ></el-table-column>
+          <el-table-column align="center"  prop="ParentName" label="父级Id" ></el-table-column>
           <el-table-column align="center"  prop="sort" label="排序" ></el-table-column>
           <el-table-column align="center"  prop="showed" label="是否展示" >
             <template slot-scope="scope">
@@ -54,6 +62,8 @@ import Pagination from '@/components/Pagination'
           limit: 10,
         },
         total:10,
+        tagarr:[],
+        selectOptions:'全部',
         multipleSelection:[],
       }
     },
@@ -67,12 +77,32 @@ import Pagination from '@/components/Pagination'
         let that = this;
         API.GetGoodsCat(Object.assign({},that.listQuery)).then(res => {
           if(res != undefined){
-             that.GoodsCatList = res.rows
+             that.GoodsCatList = res.rows.map(Mres => {
+               Mres.ParentName = res.rows.find(f => f.catId == Mres.parentId) == undefined ? "第一级" :  res.rows.find(f => f.catId == Mres.parentId).name
+               return Mres
+             })
              that.total = res.total
+             that.TagArr();
           }else{
              that.$message.error('分类请求失败');
           }
         }).catch(err =>{})
+      },
+
+      //处理级别
+      TagArr(){
+        let that = this;
+        let arr = [];
+        that.GoodsCatList.map(res => {
+            that.tagarr.push(res.root);
+        })
+
+        this.tagarr = Array.from(new Set(this.tagarr)).map((res,index) => {
+          return {name : `第${index+1}级`,root : res}
+          // res.name = `第${index}级`
+          // res.root = res
+        })
+
       },
 
       //删除数据

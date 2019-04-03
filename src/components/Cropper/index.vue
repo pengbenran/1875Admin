@@ -64,7 +64,10 @@
     props:{
       id:String,
       proportion:Number,
-      type:Number
+      type:{
+        type:Number,
+        default:1
+      }
     },
     data(){
       return {
@@ -303,8 +306,9 @@
             u8arr[n] = bstr.charCodeAt(n);
         }
         var imgFile=new File([u8arr], 'aa.jpg', {type:mime});
+        console.log("查看这些个数据",this.proportion,this.type)
         data.append('file',imgFile)      
-        data.append('type',2)
+        data.append('type',this.type)
         if(imgFile.size/1024 < 650){
           Api_img.imageUpload(data).catch(err => {
             this.$notify.error({
