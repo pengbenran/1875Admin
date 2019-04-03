@@ -5,7 +5,11 @@
     <section>
         <el-form :model="AddData"  :rules="AddDatarules" ref="AddruleForm">
             <el-form-item label="商品编号" :label-width="formLabelWidth"  prop="sn">
-                <el-input v-model="AddData.sn" placeholder="请输入商品编号" autocomplete="off"></el-input>
+                <div class="generateSn">
+                    <el-input v-model="AddData.sn" placeholder="请输入商品编号" autocomplete="off">
+                        <el-button type="success" plain  slot="append" icon="el-icon-success" @click="generateSn" >生成编号</el-button>
+                    </el-input>
+                </div>
             </el-form-item>   
             <el-form-item label="商品名称" :label-width="formLabelWidth"  prop="goodName">
                 <el-input v-model="AddData.goodName" placeholder="请输入商品名称" autocomplete="off"></el-input>
@@ -14,54 +18,86 @@
                 <el-input v-model="AddData.title" placeholder="请输入商品标题" autocomplete="off"></el-input>
             </el-form-item>   
             <el-form-item label="展示价格" :label-width="formLabelWidth"  prop="showPrice">
-                <el-input v-model="AddData.showPrice" placeholder="请输入展示价格" autocomplete="off"></el-input>
+                <el-input v-model="AddData.showPrice" placeholder="请输入展示价格" autocomplete="off">
+                    <template slot="append">元</template>
+                </el-input>
             </el-form-item>
             <el-form-item label="成本价" :label-width="formLabelWidth"  prop="cost">
-                <el-input v-model="AddData.cost" placeholder="请输入成本价" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="是否热销" :label-width="formLabelWidth"  prop="hot">
-                <el-input v-model="AddData.hot" placeholder="请设置是否热销" autocomplete="off"></el-input>
-            </el-form-item>   
+                <el-input v-model="AddData.cost" placeholder="请输入成本价" autocomplete="off">
+                    <template slot="append">元</template>
+                </el-input>
+            </el-form-item> 
             <el-form-item label="价格" :label-width="formLabelWidth"  prop="price">
-                <el-input v-model="AddData.price" placeholder="请输入价格" autocomplete="off"></el-input>
+                <el-input v-model="AddData.price" placeholder="请输入价格" autocomplete="off">
+                    <template slot="append">元</template>
+                </el-input>
             </el-form-item>  
             <el-form-item label="排序" :label-width="formLabelWidth"  prop="sort">
                 <el-input v-model="AddData.sort" placeholder="请输入排序" autocomplete="off"></el-input>
             </el-form-item>                                          
-
+            <el-form-item label="是否热销" :label-width="formLabelWidth"  prop="hot">
+                <el-radio v-model="AddData.hot" label="1">是</el-radio>
+                <el-radio v-model="AddData.hot" label="2">否</el-radio>
+            </el-form-item>  
             <el-form-item label="商品状态" :label-width="formLabelWidth" prop="status">
-                <el-radio v-model="AddData.status" label="1">待付款</el-radio>
-                <el-radio v-model="AddData.status" label="2">已付款</el-radio>
-                <el-radio v-model="AddData.status" label="3">已取消</el-radio>
-                <el-radio v-model="AddData.status" label="4">已关闭</el-radio>
+                <el-radio v-model="AddData.status" label="1">未上架</el-radio>
+                <el-radio v-model="AddData.status" label="2">已上架</el-radio>
+                <el-radio v-model="AddData.status" label="3">立即上架</el-radio>
             </el-form-item>
             <el-form-item label="分类ID" :label-width="formLabelWidth"  prop="catId">
                 <el-input v-model="AddData.catId" placeholder="请输入分类ID" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="分类名称" :label-width="formLabelWidth"  prop="catName">
-                <el-input v-model="AddData.catName" placeholder="请输入分类名称" autocomplete="off"></el-input>
+                <el-select v-model="AddData.catName1" clearable placeholder="请选择" @change = 'changeCatName'>
+                    <el-option v-for="item in goodsCatRoot" :key="item.value" :label="item.name" :value="item.catId"></el-option>
+                </el-select>
+                <el-select v-model="AddData.catName2" clearable placeholder="请选择" @change = 'changeCatName' :disabled = "goodCatChilerBool">
+                    <el-option v-for="item in goodCatChiler" :key="item.value" :label="item.name" :value="item.catId"></el-option>
+                </el-select>
             </el-form-item>      
             <el-form-item label="区域" :label-width="formLabelWidth"  prop="region">
                 <el-input v-model="AddData.region" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item> 
-            <el-form-item label="商品描述" :label-width="formLabelWidth"  prop="region">
-                <el-input v-model="AddData.content" placeholder="请输入内容" autocomplete="off"></el-input>
-            </el-form-item> 
             <el-form-item label="付款类型" :label-width="formLabelWidth"  prop="payType">
-                <el-radio v-model="AddData.payType" label="1">是</el-radio>
-                <el-radio v-model="AddData.payType" label="2">否</el-radio>
+                <el-radio v-model="AddData.payType" label="1">微信支付</el-radio>
+                <el-radio v-model="AddData.payType" label="2">余额支付</el-radio>
+                <!-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> -->
+            </el-form-item>
+            <el-form-item label="积分抵扣金额" :label-width="formLabelWidth"  prop="pointAmount">
+                <el-input v-model="AddData.pointAmount" placeholder="请输入内容" autocomplete="off">
+                    <template slot="append">元</template>
+                </el-input>
+            </el-form-item> 
+            <el-form-item label="商品失效时间" :label-width="formLabelWidth"  prop="invalidTime">
+                <el-input v-model="AddData.invalidTime" placeholder="请输入内容" autocomplete="off">
+                    <template slot="append">元</template>
+                </el-input>
+            </el-form-item> 
+            <el-form-item label="商品类型" :label-width="formLabelWidth"  prop="goodType">
+                <el-radio v-model="AddData.goodType" label="1">商品类型</el-radio>
+                <el-radio v-model="AddData.goodType" label="2">商品类型</el-radio>
                 <!-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> -->
             </el-form-item>
             <el-form-item label="商品详情" :label-width="formLabelWidth"  prop="thumbnail">
                 <Editor/>
             </el-form-item>   
             <el-form-item label="商品缩略图" :label-width="formLabelWidth"  prop="thumbnail">
-                <div class="avatar-uploader" @click="UpLoadShow"><img v-if="AddData.thumbnail" :src="AddData.thumbnail" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></div>
-                <!-- <el-input v-model="AddData.thumbnail" placeholder="请输入内容" autocomplete="off"></el-input> -->
+                <div class="avatar-uploader" @click="UpLoadShow(1,1)"><img v-if="AddData.thumbnail" :src="AddData.thumbnail" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></div>
             </el-form-item>   
             <el-form-item label="轮播图" :label-width="formLabelWidth"  prop="images">
-                <el-input v-model="AddData.images" placeholder="请输入内容" autocomplete="off"></el-input>
+                <div class="avatar-uploader" v-for="(item,index) in AddData.images" :key="item" :index='index' @click="UpLoadShow(2,1,index)">
+                    <img :src="item" class="avatar">
+                </div>
+                <div class="avatar-uploader" @click="UpLoadShow(2,1)">
+                    <i class="el-icon-plus avatar-uploader-icon"></i>
+                </div>
             </el-form-item>   
+            <el-form-item label="分享海报" :label-width="formLabelWidth"  prop="posterImg">
+                <div class="avatar-uploader" @click="UpLoadShow(3,1)">
+                    <img v-if="AddData.posterImg" :src="AddData.posterImg" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </div>
+            </el-form-item>
             <el-form-item label="展示销售量" :label-width="formLabelWidth"  prop="showSales">
                 <el-input v-model="AddData.showSales" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>   
@@ -69,14 +105,14 @@
                 <el-input v-model="AddData.sales" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="商店ID" :label-width="formLabelWidth"  prop="shopId">
-                <el-input v-model="AddData.shopId" placeholder="请输入内容" autocomplete="off"></el-input>
-            </el-form-item>
-
-            <el-form-item label="分享海报" :label-width="formLabelWidth"  prop="posterImg">
-                <el-input v-model="AddData.posterImg" placeholder="请输入内容" autocomplete="off"></el-input>
+                <el-select v-model="AddData.shopId" placeholder="请选择">
+                   <el-option v-for="item in shopList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="是否可以使用红包" :label-width="formLabelWidth"  prop="redPacket">
-                <el-input v-model="AddData.redPacket" placeholder="请输入内容" autocomplete="off"></el-input>
+                <el-radio v-model="AddData.redPacket" label="1">是</el-radio>
+                <el-radio v-model="AddData.redPacket" label="2">否</el-radio>
+                <!-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> -->
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -86,7 +122,7 @@
     </section>
     <!--商品分类添加-->
 
-    <Uploadimg ref='UploadImg'/>
+    <Uploadimg ref='UploadImg' @GetDataImg='GetDataImg' :type='ImgType' :proportion='proportion'/>
     <!--图片上传 end-->
     
     </div>
@@ -94,8 +130,11 @@
 <script>
 import API from "@/api/goods";
 import Editor from "@/components/ueditor/ueditor";
-import Uploadimg from "./Component/UpLoadImg";
-// import 
+import Uploadimg from "@/components/UpLoadImg/UpLoadImg";
+import Store from "@/store/index"
+import { random_No } from "@/utils/index"
+import { mapActions } from 'vuex';
+
 export default {
     name: 'GoodsCreate',
     components:{Editor,Uploadimg},
@@ -103,48 +142,121 @@ export default {
         return {
            AddShow:false,
            AddData:{
-               content:''
+               sn:'',
+               content:'',
+               thumbnail:'',
+               images:[],
+               posterImg:'',
+               payType:'1',
+               catId:'',
+               redPacket:'2',
+               status:'2',
+               hot:'2'
            },
            formLabelWidth:'120px',
            AddDatarules:{
-             name:[
-                { required: true, message: '等级名称', trigger: 'blur' },
+             sn:[
+                { required: true, message: '请输入编号', trigger: 'blur' },
              ],
-             root:[
-                { required: true, message: '请设置根级', trigger: 'blur' },
+             goodName:[
+                { required: true, message: '请输入商品名称', trigger: 'blur' },
              ],
-             parentId:[
-                { required: true, message: '请设置父级', trigger: 'blur' },
+             title:[
+                { required: true, message: '请输入商品标题', trigger: 'blur' },
+             ],
+             showPrice:[
+                { required: true, message: '请输入展示价格', trigger: 'blur' },
+             ],
+             cost:[
+                { required: true, message: '请输入成本价', trigger: 'blur' },
+             ],
+             price:[
+                { required: true, message: '请输入价格', trigger: 'blur' },
              ],
              sort:[
                 { required: true, message: '请设置排序', trigger: 'blur' },
              ],
-             showed:[
-                { required: true, message: '请设置是否展示', trigger: 'blur' },
+             hot:[
+                { required: true, message: '请设置是否热销', trigger: 'blur' },
              ],
-             img:[
-                { required: true, message: '请设置分类图片', trigger: 'blur' },
+             status:[
+                { required: true, message: '请设置商品状态', trigger: 'blur' },
+             ],
+             catName:[
+                { required: true, message: '请设置分类', trigger: 'blur' },
+             ],
+             region:[
+                { required: true, message: '请设置区域', trigger: 'blur' },
+             ],
+             payType:[
+                { required: true, message: '请设置付款类型', trigger: 'blur' },
+             ],
+             thumbnail:[
+                { required: true, message: '设置商品缩略图', trigger: 'blur' },
+             ],
+             images:[
+                { required: true, message: '请设置轮播图', trigger: 'blur' },
+             ],
+             posterImg:[
+                { required: true, message: '请设置分享海报', trigger: 'blur' },
+             ],
+             showSales:[
+                { required: true, message: '请设置展示销量', trigger: 'blur' },
+             ],
+             sales:[
+                { required: true, message: '请设置销量', trigger: 'blur' },
+             ],
+             shopId:[
+                { required: true, message: '请设置店铺', trigger: 'blur' },
+             ],
+             redPacket:[
+                { required: true, message: '请设置是否使用红包', trigger: 'blur' },
              ],
            },
+           goodsCat:[],
+           goodsCatRoot:[],
+           goodCatChiler:[],
+           shopList:[
+                {value: '1',label: '马登的小店'},
+                {value: '选项1',label: '马登的小店'}
+           ],
+           ImgType:0, //设置图片类型
+           proportion:1, //设置图片比例
+           imageIndex:'',//轮播时指定的下标
+           ItemProps:{
+               value:'label',
+               children:'cities'
+           }
+        }
+    },
+    computed:{
+        GoodCatRoot(){
+            console.log(this.goodsCat,"查看一下分类后的数据",this.goodsCat.filter(f => f.root == 1))
+            return this.goodsCat.filter(f => f.root == 1)
+        },
+        goodCatChilerBool(){
+            return this.goodCatChiler.length > 0 ? false : true
         }
     },
     mounted () {
-    //    this.GetGoodsCatList();
+      //this.GetGoodsCatList();
+      this.GetGoodsCatData();
+      
     },
     methods: {
+        ...mapActions('good',['Get_GoodsCatData']),
         //添加用户的等级
         addData(){
             let that = this;
             this.$refs['AddruleForm'].validate((valid) => {
             if (valid) {
-                API.AddGoodsCat(that.AddData).then(res => {
+                that.AddData.images.join(',');
+                API.AddGoods(that.AddData).then(res => {
                     if(res.code == 0){
                         that.$message({ message: '添加成功', type: 'success'});
-                        that.$parent.GetGoodsCatList();
-                        that.AddShow = false
                         that.AddData = {}
                     }else{
-                    that.$message.error('添加失败');
+                        that.$message.error('添加失败');
                     }
                 }).catch(err => {})
             } else {
@@ -154,11 +266,79 @@ export default {
             });
         },
 
-        //显示图片上传框
-        UpLoadShow(){
+        //获取商品分类
+        GetGoodsCatData(){
+            let that = this;
+            let arr = [];
+            if(Store.state.good.goodsCat.length > 0){
+                that.goodsCat = Store.state.good.goodsCat
+                that.goodsCatRoot = that.goodsCat.filter(f => f.root == 1)
+            }else{
+                let data = { page: 1,limit: 20}
+                API.GetGoodsCat(data).then(res => {
+                    if(res != undefined){
+                        that.goodsCat = res.rows;
+                        that.goodsCatRoot = that.goodsCat.filter(f => f.root == 1);
+                        that.Get_GoodsCatData(res.rows);
+                    }else{
+                        that.$message.error('商品列表并未请求到');
+                    }
+                }).catch(err =>{});
+            }
+        },
+
+        //分类级联选择（暂时无用）
+        handleItemChange(val){
+            let that = this;
+            let atr = that.goodsCatRoot.findIndex(Dres => Dres.name == val)
+            console.log(that.goodsCatRoot[atr],"查看更改的数据",that.goodsCat.filter(Mres => Mres.name == val))
+            that.goodsCatRoot[atr].cities = that.goodsCat.filter(Mres => Mres.name == val)
+            // .push();
+            console.log(atr,"你好世界",val,that.goodsCatRoot)
+        },
+        
+        //生成编号
+        generateSn(){
+            this.AddData.sn = random_No(3)
+        },
+
+        //赋值分类
+        changeCatName(val){
+            this.goodCatChiler = this.goodsCat.filter(Mres => Mres.parentId == val)
+            let goodCatFind = this.goodsCat.find(f => f.catId == val)
+            if(this.goodCatChiler.length == 0 ){
+                this.AddData.catName = goodCatFind.name
+                this.AddData.catId = goodCatFind.catId
+            }
+            console.log(this.AddData,val,"你好世界阿斯达所多",this.goodCatChiler)
+        },
+
+        //显示图片上传框 type:上传图片的类型 proportion:上传图片的比例 IMAGE_iNDEX:轮播图时修改指定图片的下标
+        UpLoadShow(type,proportion,IMAGE_iNDEX){
+            this.ImgType = type;
+            this.proportion = proportion;
+            IMAGE_iNDEX != undefined ? this.imageIndex = IMAGE_iNDEX : this.imageIndex = undefined
             this.$refs.UploadImg.showDialog(true)
         },
 
+        //图片返回赋值
+        GetDataImg(ImgUrl){
+            let that = this;
+            switch (that.ImgType) {
+                case 1:
+                    that.AddData.thumbnail = ImgUrl;
+                    break;
+                case 2:
+                    that.imageIndex == undefined ? that.AddData.images.push(ImgUrl) : that.AddData.images[that.imageIndex] = ImgUrl;
+                    break;
+                case 3:
+                    that.AddData.posterImg = ImgUrl;
+                    break;                                
+                default:
+                    break;
+            }
+        }
+        
     }
 }
 </script>
@@ -171,12 +351,17 @@ export default {
     overflow: hidden;
     display: inline-block;
 }
-.avatar-uploader-icon{
+.avatar-uploader .avatar-uploader-icon,.avatar-uploader img{
     font-size: 28px;
     color: #8c939d;
     width: 178px;
     height: 178px;
     line-height: 178px;
     text-align: center;
+}
+.generateSn{
+    display: flex;
+    align-items: center;
+
 }
 </style>

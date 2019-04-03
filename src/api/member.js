@@ -74,6 +74,22 @@ export default {
    //推荐师批量删除
    batchDeleteDistributor:params => {
      return API.DELETE('/member/distributorLv/batchRemove',params)
+   },
+
+   //获取分享师的提现记录
+   getWithdrawApplyList:params => {
+     return API.GET('/member/withdrawApply/list',params)
+   },
+
+   //删除分享师的提现记录
+   deleteWithdrawApplyList:params => {
+     return API.DELETE('/member/withdrawApply/remove',params)
+   },
+
+   //批量删除分享师提现记录
+   batchDeleteWithdrawApplyList:params => {
+     return API.DELETE('/member/withdrawApply/batchRemove',params)
    }
 
+   
 }
