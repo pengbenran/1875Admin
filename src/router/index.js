@@ -37,6 +37,7 @@ const mainRoutes = {
     { path: '/theme', component: _import('common/theme'), name: 'theme', meta: { title: '主题' } },
     { path: '/demo-echarts', component: _import('demo/echarts'), name: 'demo-echarts', meta: { title: 'demo-echarts', isTab: true } },
     { path: '/demo-ueditor', component: _import('demo/ueditor'), name: 'demo-ueditor', meta: { title: 'demo-ueditor', isTab: true } },
+    { path: '/goods-goodsedit', component: _import('modules/goods/goodsEdit'), name: 'goods-edit', meta: { title: '商品编辑'  } },
     // { path: '/membership-membershipManagerment', component: _import('membership/membershipManagerment/index'), name: 'membership-membershipManagerment', meta: { title: '会员列表' } },
     // { path: '/membership-membershipLevel', component: _import('membership/membershipLevel/index'), name: 'membership-membershipLevel', meta: { title: '会员等级' } },
     // { path: '/membership-recommender', component: _import('membership/recommender/index'), name: 'membership-recommender', meta: { title: '推荐师列表' } },

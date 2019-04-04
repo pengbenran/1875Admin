@@ -8,7 +8,7 @@ export default {
 
     //商品列表
     GoodsList:params => {
-        return API.POST('/good/good/list',params)
+        return API.GET('/good/good/list',params)
     },
 
     //商品分类修改
@@ -23,7 +23,7 @@ export default {
 
     //商品删除
     DeleteGood:params => {
-        return API.POST('/good/good/remove',params)
+        return API.DELETE('/good/good/remove',params)
     },
 
     
