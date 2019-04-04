@@ -70,7 +70,7 @@
             </el-form-item> 
             <el-form-item label="商品失效时间" :label-width="formLabelWidth"  prop="invalidTime">
                 <el-date-picker v-model="AddData.invalidTime"    type="date" value-format="timestamp" format="yyyy 年 MM 月 dd 日" placeholder="选择日期">
-                </el-date-picker>失效时间：{{AddData.invalidTime}}
+                </el-date-picker>
             </el-form-item> 
             <el-form-item label="商品类型" :label-width="formLabelWidth"  prop="goodType">
                 <el-radio v-model="AddData.goodType" label="1">自营商品</el-radio>
@@ -78,8 +78,8 @@
                 <el-radio v-model="AddData.goodType" label="3">优惠券商品</el-radio>
                 <!-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> -->
             </el-form-item>
-            <el-form-item label="商品详情" :label-width="formLabelWidth"  prop="content">
-                <Editor />
+            <el-form-item label="商品详情" :label-width="formLabelWidth"  prop="thumbnail">
+                <Editor/>
             </el-form-item>   
             <el-form-item label="商品缩略图" :label-width="formLabelWidth"  prop="thumbnail">
                 <div class="avatar-uploader" @click="UpLoadShow(1,1)"><img v-if="AddData.thumbnail" :src="AddData.thumbnail" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></div>
@@ -240,9 +240,6 @@ export default {
         }
     },
     computed:{
-        GoodCatRoot(){
-            return this.goodsCat.filter(f => f.root == 1)
-        },
         goodCatChilerBool(){
             return this.goodCatChiler.length > 0 ? false : true
         },
@@ -252,29 +249,21 @@ export default {
     },
     mounted () {
       this.GetGoodsCatData();
+      this.AddData = this.$route.query;
+      this.AddData.payType = this.AddData.payType + '';
+      this.AddData.hot = this.AddData.hot + '';
+      this.AddData.status = this.AddData.status + '';
+      this.AddData.goodType = this.AddData.goodType + '';
+      this.AddData.invalidTime = new Date(this.AddData.invalidTime).getTime();
+      this.AddData.imagesList = this.AddData.images.split(',')
+      this.goodsCatOptionValue();
+      console.log("商品数据",this.AddData)
     },
     methods: {
         ...mapActions('good',['Get_GoodsCatData']),
-        //添加用户的等级
         addData(){
-            let that = this;
-            this.$refs['AddruleForm'].validate((valid) => {
-            if (valid) {
-                API.AddGoods(that.AddData).then(res => {
-                    if(res.code == 0){
-                        that.$message({ message: '添加成功', type: 'success'});
-                        that.AddData = {}
-                    }else{
-                        that.$message.error('添加失败');
-                    }
-                }).catch(err => {})
-            } else {
-                console.log('error submit!!');
-                return false;
-            }
-            });
-        },
 
+        },
         //获取商品分类
         GetGoodsCatData(){
             let that = this;
@@ -296,11 +285,28 @@ export default {
             }
         },
 
+        //商品编辑分类重新赋值
+        goodsCatOptionValue(){
+            let that = this;
+            let CatValue = that.goodsCat.find(f => f.catId == this.AddData.catId);
+            console.log("查看数据阿萨德",CatValue)
+            if(CatValue.root == 1){
+               that.AddData.catName1 = CatValue.name
+            }else{
+               that.AddData.catName1 = that.goodsCat.find(f => f.catId == CatValue.parentId).name;
+               that.AddData.catName2 = CatValue.name;
+            }
+            
+            console.log(that.AddData.catName2,that.AddData.catName1,"分类的值")
+        },
+
         //分类级联选择（暂时无用）
         handleItemChange(val){
             let that = this;
             let atr = that.goodsCatRoot.findIndex(Dres => Dres.name == val)
             that.goodsCatRoot[atr].cities = that.goodsCat.filter(Mres => Mres.name == val)
+            // .push();
+            console.log(atr,"你好世界",val,that.goodsCatRoot)
         },
         
         //生成编号
@@ -376,5 +382,4 @@ export default {
 .imagesBoxList{
     display: inline-block;height: 189px;width: 336px;
 }
-
 </style>
