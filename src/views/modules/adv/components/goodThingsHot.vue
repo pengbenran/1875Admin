@@ -37,24 +37,16 @@
       <!-- 编辑模态框 -->
       <goodThingsHotEditDialog :editFrom='editFrom' ref="goodThingsHotEditDialog" @ImgClick="ImgClick" @catBackGroundList="catBackGroundList"></goodThingsHotEditDialog>
       <!-- 图片裁剪 -->
-      <div class="app-main-content" >
-        <el-dialog :visible.sync="showCropper" title="封面裁图" width="70%">
-          <cropper id="avatarCrop" ref="cropper" @cropper-success="cropperSuccessHandle" :proportion="proportion" :type="type"></cropper>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="cancelCropper">取 消</el-button>
-            <el-button type="primary" @click="toCropper" :disabled='btnLoading'><i class="el-icon-loading" v-if="btnLoading" ></i> 确 定</el-button>
-          </span>
-        </el-dialog>
-      </div>
+      <uploadImg :proportion="proportion" :type="type" ref='UploadImg' @GetDataImg='GetDataImg'></uploadImg>
     </el-col>
   </el-row>
   </div>
 </template>
 
 <script>
-  import cropper from '@/components/Cropper/index'
   import goodThingsHotAddDialog from './goodThings/goodThingsHotAddDialog'
   import goodThingsHotEditDialog from './goodThings/goodThingsHotEditDialog'
+  import uploadImg from '@/components/UpLoadImg/UpLoadImg'
   import Api_adv from '@/api/adv'
   export default {
     data () {
@@ -79,7 +71,7 @@
       let that=this
       that.catBackGroundList()
     },
-    components: { cropper,goodThingsHotAddDialog,goodThingsHotEditDialog},
+    components: { uploadImg,goodThingsHotAddDialog,goodThingsHotEditDialog},
     methods: {
           //编辑
           showEditDialog(index,row){
@@ -91,13 +83,8 @@
           showAddDialog(){
             let that = this;
             that.$refs.goodThingsHotAddDialog.showAddDialog()
-          },
-           //父组件调用子组件裁剪方法
-           toCropper(){
-             this.btnLoading = true;
-             this.$refs.cropper.submit();
-           },
-           catBackGroundList(){
+          },    
+          catBackGroundList(){
             let params={}
             let that=this
             that.addFrom={catName:'',type:1,url:'', fontColor:'',sorts:''},
@@ -105,21 +92,7 @@
             Api_adv.catBackGroundList(params).then(function(res){
               that.kindList=res.rows
             })
-           },
-          cancelCropper(){
-            this.showCropper = false
-            this.$refs.cropper.cropDone();
-          },
-          //子组件裁剪方法成功执行后与父组件通信
-          cropperSuccessHandle(data){
-             //返回data
-             if(data != undefined){
-              this.showCropper = false
-              this.btnLoading = false;
-              this.addFrom.url = data.url
-              this.editFrom.url=data.url
-              }
-         },
+           }, 
           // 删除首页banner
           removecatBackLevel(index,row){
             let that=this
@@ -134,8 +107,12 @@
               }
             })
           },
+          GetDataImg(ImgUrl){
+            this.addFrom.url = ImgUrl
+            this.editFrom.url=ImgUrl
+          },
          ImgClick(){
-            this.showCropper = true;
+          this.$refs.UploadImg.showDialog(true)
          }  
     }
   }

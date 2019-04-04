@@ -37,24 +37,16 @@
       <!-- 编辑界面 -->
       <bannerEditDialog :editFrom='editFrom' ref="bannerEditDialog" @ImgClick="ImgClick" @getHomeBanner="getHomeBanner"></bannerEditDialog>
       <!-- 图片裁剪 -->
-      <div class="app-main-content" >
-        <el-dialog :visible.sync="showCropper" title="封面裁图" width="70%">
-          <cropper id="avatarCrop" ref="cropper" @cropper-success="cropperSuccessHandle" :proportion="proportion" :type="type"></cropper>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="cancelCropper">取 消</el-button>
-            <el-button type="primary" @click="toCropper" :disabled='btnLoading'><i class="el-icon-loading" v-if="btnLoading" ></i> 确 定</el-button>
-          </span>
-        </el-dialog>
-    </div>
+      <uploadImg :proportion="proportion" :type="type" ref='UploadImg' @GetDataImg='GetDataImg'></uploadImg>
     </el-col>
   </el-row>
   </div>
 </template>
 
 <script>
-  import cropper from '@/components/Cropper/index'
   import bannerEditDialog from './components/bannerEditDialog'
   import bannerAddDialog from './components/bannerAddDialog'
+  import uploadImg from '@/components/UpLoadImg/UpLoadImg'
   import Api_adv from '@/api/adv'
   export default {
     data () {
@@ -68,7 +60,6 @@
           status:1,
           sorts:''
         },
-        showCropper:false,
         proportion:2.8,
         type:2,
         btnLoading:false,
@@ -78,7 +69,7 @@
       let that=this
       that.getHomeBanner()
     },
-    components: { cropper,bannerEditDialog,bannerAddDialog},
+    components: { uploadImg,bannerEditDialog,bannerAddDialog},
     methods: {
       // 获取首页banner
       getHomeBanner(){
@@ -115,81 +106,15 @@
         let that = this;
         that.$refs.bannerAddDialog.showAddDialog()
       },
-      //父组件调用子组件裁剪方法
-      toCropper(){
-       this.btnLoading = true;
-       this.$refs.cropper.submit();
-     },
-     cancelCropper(){
-      this.showCropper = false
-      this.$refs.cropper.cropDone();
-    },
-    //子组件裁剪方法成功执行后与父组件通信
-    cropperSuccessHandle(data){
-      if(data != undefined){
-      this.showCropper = false
-      this.btnLoading = false;
-      this.addFrom.url=data.url
-      this.editFrom.url = data.url
-      }
-      else{
-        this.$message.error('抱歉，您的网络错误');
-      }
-    },
-    ImgClick(){
-      this.showCropper = true;
-    }  
-    // async submitClick(){
-    //   let that = this;
-    //   that.form.src = this.imgList.join(',')
-    //   that.form.recommendimg =  this.tjImgList.join(',')
-    //   that.listLoading = true;
-    //   if(that.btntijiaoVisible){ //修改提交
-    //     let res = await API_adver.update_advert(that.form).catch(err => {
-    //         this.$message.error('抱歉，您的网络错误')
-    //     })
-    //      if(res.code == 0){
-    //         this.getAdvert();
-    //         that.dialogFormVisible = false;
-    //         that.listLoading = false;
-    //         this.$message({
-    //           message: '修改成功',
-    //           type: 'success'
-    //         });
-    //     }else{
-    //         this.getAdvert();
-    //         that.dialogFormVisible = false;
-    //         that.listLoading = false;
-    //         this.$message({
-    //           message: '修改失败',
-    //           type: 'success'
-    //         });
-
-    //     }
-
-    //   }else{ //信息上传
-    //     let res = await API_adver.save_advert(that.form).catch(err => {
-    //         this.$message.error('抱歉，您的网络错误')
-    //     })
-    //     if(res.code == 0){
-    //         this.getAdvert();
-    //         that.dialogFormVisible = false;
-    //         that.listLoading = false;
-    //         this.$message({
-    //           message: '添加成功',
-    //           type: 'success'
-    //         });
-    //     }else{
-    //         this.getAdvert();
-    //         that.dialogFormVisible = false;
-    //         that.listLoading = false;
-    //         this.$message({
-    //           message: '添加失败',
-    //           type: 'success'
-    //         });
-    //     }
-    //   }
-    // },
+      GetDataImg(ImgUrl){
+        let that=this
+        this.addFrom.url=ImgUrl
+        this.editFrom.url = ImgUrl
+      },
+      ImgClick(){
+        let that=this
+        that.$refs.UploadImg.showDialog(true)
+      }  
     }
   }
 </script>

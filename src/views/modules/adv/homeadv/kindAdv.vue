@@ -21,41 +21,27 @@
     </el-form-item>
     <el-button type="primary" @click="onSubmit">提交</el-button>
   </el-form>
-  <div class="app-main-content">
-    <el-dialog :visible.sync="showCropper" title="封面裁图" width="70%">
-      <cropper
-      id="avatarCrop"
-      ref="cropper"
-      @cropper-success="cropperSuccessHandle"
-      :proportion="proportion" :type="type"
-      ></cropper>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="cancelCropper">取 消</el-button>
-        <el-button type="primary" @click="toCropper" :disabled="btnloadingVisible">
-          <i class="el-icon-loading" v-if="btnloadingVisible"></i> 确 定
-        </el-button>
-      </span>
-    </el-dialog>
-  </div>
+   <!-- 图片裁剪 -->
+   <uploadImg :proportion="proportion" :type="type" ref='UploadImg' @GetDataImg='GetDataImg'></uploadImg>
 </div>
 </template>
 
 <script>
-  import cropper from "@/components/Cropper/index";
+  import uploadImg from '@/components/UpLoadImg/UpLoadImg'
   import Api_adv from "@/api/adv"
   export default {
     data () {
       return {
        formLabelWidth: "120px",
        proportion: 0.59,
-       type:4,
+       type:3,
        btnloadingVisible: false,
        showCropper: false,
        setForm: {}, 
       index:'' 
       }
     },
-    components: {cropper},
+    components: {uploadImg},
     mounted () {
     let that=this
     that.HomeBackGround()
@@ -90,30 +76,18 @@
         else{
           that.proportion=1.94
         }
-        that.showCropper = true;
+        that.$refs.UploadImg.showDialog(true)
       },
-      //隐藏裁剪框
-      cancelCropper() {
-        this.showCropper = false;
-        this.$refs.cropper.cropDone();
-      },
-      //父组件调用子组件裁剪方法
-      toCropper() {
-        this.btnloadingVisible = true;
-        this.$refs.cropper.submit();
-      },  
-      cropperSuccessHandle(data) {
+      GetDataImg(ImgUrl){
         let that=this
-        that.btnloadingVisible = false;
-        that.showCropper = false;
         if(that.index==1){
-          that.setForm.favoriteFood=data.url
+          that.setForm.favoriteFood=ImgUrl
         }
         else if(that.index==2){
-          that.setForm.explosive=data.url
+          that.setForm.explosive=ImgUrl
         }
         else{
-          that.setForm.costEffective=data.url
+          that.setForm.costEffective=ImgUrl
         }
       },
     }

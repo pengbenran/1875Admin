@@ -48,7 +48,6 @@ export default {
          //返回data
         this.showCropper = false;
         this.loading = false;
-        console.log("图片上传的信息",data)
         if(data.code == 0){
           this.$emit('GetDataImg',data.url)
         }

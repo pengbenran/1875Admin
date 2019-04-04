@@ -40,22 +40,14 @@
       <!-- 关联商品 -->
       <costEffectiveGoodConnectDialog :goodsListData='goodsListData' ref="costEffectiveGoodConnectDialog"></costEffectiveGoodConnectDialog>
       <!-- 图片裁剪 -->
-      <div class="app-main-content" >
-        <el-dialog :visible.sync="showCropper" title="封面裁图" width="70%">
-          <cropper id="avatarCrop" ref="cropper" @cropper-success="cropperSuccessHandle" :proportion="proportion" :type="type"></cropper>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="cancelCropper">取 消</el-button>
-            <el-button type="primary" @click="toCropper" :disabled='btnLoading'><i class="el-icon-loading" v-if="btnLoading" ></i> 确 定</el-button>
-          </span>
-        </el-dialog>
-    </div>
+      <uploadImg :proportion="proportion" :type="type" ref='UploadImg' @GetDataImg='GetDataImg'></uploadImg>
     </el-col>
   </el-row>
   </div>
 </template>
 
 <script>
-  import cropper from '@/components/Cropper/index'
+  import uploadImg from '@/components/UpLoadImg/UpLoadImg'
   import costEffectiveAddDialog from './components/costEffective/costEffectiveAddDialog'
   import costEffectiveEditDialog from './components/costEffective/costEffectiveEditDialog'
   import costEffectiveGoodConnectDialog from './components/costEffective/costEffectiveGoodConnectDialog'
@@ -82,7 +74,7 @@
       let that=this
       that.getHomeBanner()
     },
-    components: { cropper,costEffectiveAddDialog,costEffectiveEditDialog,costEffectiveGoodConnectDialog},
+    components: { uploadImg,costEffectiveAddDialog,costEffectiveEditDialog,costEffectiveGoodConnectDialog},
     methods: {
       // 获取首页banner
       getHomeBanner(){
@@ -123,30 +115,15 @@
         let that = this;
         that.$refs.costEffectiveGoodConnectDialog.showGoodConnectDialog()
       },
-      //父组件调用子组件裁剪方法
-      toCropper(){
-       this.btnLoading = true;
-       this.$refs.cropper.submit();
-     },
-     cancelCropper(){
-      this.showCropper = false
-      this.$refs.cropper.cropDone();
-    },
-    //子组件裁剪方法成功执行后与父组件通信
-    cropperSuccessHandle(data){
-      if(data != undefined){
-      this.showCropper = false
-      this.btnLoading = false;
-      this.addFrom.url=data.url
-      this.editFrom.url = data.url
-      }
-      else{
-        this.$message.error('抱歉，您的网络错误');
-      }
-    },
-    ImgClick(){
-      this.showCropper = true;
-    }  
+      GetDataImg(ImgUrl){
+        let that=this
+        that.addFrom.url=ImgUrl
+        that.editFrom.url = ImgUrl
+      }, 
+      ImgClick(){
+        let that=this
+        that.$refs.UploadImg.showDialog(true)
+      }  
     }
   }
 </script>
