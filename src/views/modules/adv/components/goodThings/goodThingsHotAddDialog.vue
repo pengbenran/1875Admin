@@ -25,54 +25,66 @@
             <el-table ref="multipleTable":data="gridData" tooltip-effect="dark" style="width: 100%"
             @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column label="商品名称" prop="name">
+            <el-table-column label="商品名称" prop="goodName">
             </el-table-column>
-            <el-table-column prop="address" label="商品图片"></el-table-column>
+            <el-table-column label="商品图片">
+              <template slot-scope="scope">
+               <img :src="scope.row.thumbnail" width="80">
+              </template>
+            </el-table-column>
            </el-table>
           </el-form-item>   
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button>取 消</el-button>
-          <el-button type="primary" @click='submit'>确 定</el-button>
+          <el-button  @click.native="addFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click='submit([gridData[0]])'>确 定</el-button>
         </div>
       </el-dialog>
 </template>
 <script type="text/javascript">
   import Api_adv from '@/api/adv'
 	export default {
-		props: ['addFrom'],
+		props: ['addFrom','gridData'],
 		data () {
 			return {
 				addFormVisible:false,
 				formLabelWidth: '120px',
-        gridData: [],
 			}
 		},
     methods:{
-      handleSelectionChange(){
-
-      },
+      handleSelectionChange(val){
+        console.log('aaaaa',val);
+      },  
       showAddDialog(){
             let that = this;
             that.addFormVisible = true;
+            setTimeout(function(res){
+                that.$refs.multipleTable.toggleRowSelection(that.gridData[1]);
+            },500)
+           
+            // that.$refs.multipleTable.toggleRowSelection(that.gridData[1]);
       },
       ImgClick(){
+        console.log('that.$refs.multipleTable',this.$refs.multipleTable)
         this.$emit('ImgClick');
+         // console.log('that.$refs.multipleTable',that.$refs.multipleTable)
       },
-      submit(){
+      submit(rows){
         let that=this
-        Api_adv.catBackGroundAdd(that.addFrom).then(function(res){
-          if(res.code==0){
-           that.$message.success({
-            showClose: true,
-            message: "新增成功",
-            duration: 2000
-          });
-           that.addFormVisible = false;
-           that.$emit('catBackGroundList');
-         }
-          console.log(res);
-        })
+        console.log('that.$refs.multipleTable',that.$refs.multipleTable)
+         that.$refs.multipleTable.toggleRowSelection(rows[0]);
+        // Api_adv.catBackGroundAdd(that.addFrom).then(function(res){
+        //   if(res.code==0){
+        //    that.$message.success({
+        //     showClose: true,
+        //     message: "新增成功",
+        //     duration: 2000
+        //   });
+        //    that.addFormVisible = false;
+        //    that.$emit('catBackGroundList');
+        //  }
+        //   console.log(res);
+        // })
       }
     }
 	}

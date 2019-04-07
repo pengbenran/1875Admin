@@ -33,7 +33,7 @@
         </el-table-column>
       </el-table>
       <!-- 新增模态框 -->
-      <goodThingsHotAddDialog :addFrom='addFrom' ref="goodThingsHotAddDialog" @ImgClick="ImgClick" @catBackGroundList="catBackGroundList"></goodThingsHotAddDialog>
+      <goodThingsHotAddDialog :addFrom='addFrom' ref="goodThingsHotAddDialog" @ImgClick="ImgClick" @catBackGroundList="catBackGroundList" :gridData='gridData'></goodThingsHotAddDialog>
       <!-- 编辑模态框 -->
       <goodThingsHotEditDialog :editFrom='editFrom' ref="goodThingsHotEditDialog" @ImgClick="ImgClick" @catBackGroundList="catBackGroundList"></goodThingsHotEditDialog>
       <!-- 图片裁剪 -->
@@ -47,6 +47,7 @@
   import goodThingsHotAddDialog from './goodThings/goodThingsHotAddDialog'
   import goodThingsHotEditDialog from './goodThings/goodThingsHotEditDialog'
   import uploadImg from '@/components/UpLoadImg/UpLoadImg'
+  import Api_goodList from '@/api/goods'
   import Api_adv from '@/api/adv'
   export default {
     data () {
@@ -64,12 +65,18 @@
         proportion:2.8,
         type:4,
         btnLoading:false,
-        formLabelWidth:'120px'
+        formLabelWidth:'120px',
+        listQuery:{
+          page: 1,
+          limit: 10,
+        },
+        gridData:[]
       }
     },
     mounted () {
       let that=this
       that.catBackGroundList()
+      that.getGoodList()
     },
     components: { uploadImg,goodThingsHotAddDialog,goodThingsHotEditDialog},
     methods: {
@@ -83,7 +90,13 @@
           showAddDialog(){
             let that = this;
             that.$refs.goodThingsHotAddDialog.showAddDialog()
-          },    
+          }, 
+          getGoodList(){
+            let that=this
+            Api_goodList.GoodsList(that.listQuery).then(function(res){
+              that.gridData=res.rows
+            })
+          },   
           catBackGroundList(){
             let params={}
             let that=this

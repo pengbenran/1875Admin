@@ -68,6 +68,7 @@
         proportion:2.8,
         type:2,
         btnLoading:false,
+        goodsListData:[]
       }
     },
     mounted () {
