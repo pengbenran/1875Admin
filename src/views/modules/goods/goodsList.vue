@@ -146,7 +146,7 @@ import Pagination from '@/components/Pagination'
 
       },
 
-      //添加等级
+      //添加商品
       AddGoods(){
         let that = this;
         this.$router.push('/goods-goodsCreate')

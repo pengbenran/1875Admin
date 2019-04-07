@@ -20,6 +20,13 @@
 <script>
   import ueditor from 'ueditor'
   export default {
+    props:{
+        Value:{
+          type:String,
+          default:''
+        }
+    },
+    
     data () {
       return {
         ue: null,
@@ -33,12 +40,19 @@
         // serverUrl: '', // 服务器统一请求接口路径
         zIndex: 3000
       })
+      
     },
     methods: {
       getContent () {
-        this.dialogVisible = true
         this.ue.ready(() => {
           this.ueContent = this.ue.getContent()
+          this.$emit('Set_Content',this.ue.getContent())
+        })
+      },
+
+      setContent(data){
+        this.ue.ready(() => {
+          this.ue.setContent(data);
         })
       }
     }

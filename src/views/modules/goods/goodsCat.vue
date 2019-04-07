@@ -9,8 +9,7 @@
         <el-col :span="4">
           <el-select v-model="selectOptions" clearable placeholder="请选择">
               <el-option v-for="item in tagarr" :key="item.root" :label="item.name" :value="item.root"></el-option>
-          </el-select>
-             
+          </el-select> 
         </el-col>
       </el-col>
       <el-col :span="24" v-loading="loading"  element-loading-text="正在查询中。。。" >
@@ -29,7 +28,11 @@
                 <el-tag :type="scope.row.showed == 1 ? 'success' : 'error' ">{{ scope.row.showed == 1 ? '是' : '否' }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column align="center"  prop="img" label="图片" ></el-table-column>
+          <el-table-column align="center"  prop="img" label="图片" >
+            <template slot-scope="scope">
+               <img :src="scope.row.img" width="80">
+            </template>
+          </el-table-column>
           <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
              <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="handlEdit(scope.$index,scope.row)">编辑</el-button>

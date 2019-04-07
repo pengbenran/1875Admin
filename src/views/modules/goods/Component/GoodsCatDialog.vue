@@ -35,7 +35,11 @@
                 <el-alert style="padding:0px" title="注：是否在前台小程序展示" type="success"></el-alert>
             </el-form-item>
             <el-form-item label="图片" :label-width="formLabelWidth" prop="img">
-                <el-input v-model="AddData.img" placeholder="请输入内容" autocomplete="off"></el-input>
+                <div class="avatar-uploader" @click="UpLoadShow(3,1,1)">
+                    <img v-if="AddData.img" :src="AddData.img" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </div>
+                <!-- <el-input v-model="AddData.img" placeholder="请输入内容" autocomplete="off"></el-input> -->
             </el-form-item>
             <el-form-item label="分类描述" :label-width="formLabelWidth">
                 <el-input   type="textarea" :rows="2" placeholder="请输入内容" v-model="AddData.description" autocomplete="off"></el-input>
@@ -82,7 +86,11 @@
                 <el-alert style="padding:0px" title="注：是否在前台小程序展示" type="success"></el-alert>
             </el-form-item>
             <el-form-item label="图片" :label-width="formLabelWidth" prop="img">
-                <el-input v-model="EdiData.img" placeholder="请输入内容" autocomplete="off"></el-input>
+                <div class="avatar-uploader" @click="UpLoadShow(3,1,2)">
+                    <img v-if="AddData.img" :src="AddData.img" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </div>
+                <!-- <el-input v-model="EdiData.img" placeholder="请输入内容" autocomplete="off"></el-input> -->
             </el-form-item>
             <el-form-item label="分类描述" :label-width="formLabelWidth">
                 <el-input   type="textarea" :rows="2" placeholder="请输入内容" v-model="EdiData.description" autocomplete="off"></el-input>
@@ -95,10 +103,14 @@
         </el-dialog>
     </section>
     <!--商品分类编辑-->
+
+    <Uploadimg ref='UploadImg' @GetDataImg='GetDataImg' :type='ImgType' :proportion='proportion'/>
+    <!--图片上传 end-->
     </div>
 </template>
 <script>
 import API from "@/api/goods";
+import Uploadimg from "@/components/UpLoadImg/UpLoadImg";
 export default {
     props:{
       GoodsCatList:{
@@ -108,10 +120,14 @@ export default {
     },
     watch:{
     },
+    components:{Uploadimg},
     data () {
         return {
            AddShow:false,
            EditShow:false,
+           ImgType:0, //设置图片类型
+           proportion:1, //设置图片比例
+           IMAGE_iNDEX:1, //是删除还是编辑的标识
            AddData:{
            parentId:'',
            root:'2'
@@ -229,11 +245,42 @@ export default {
             row.parentId = row.parentId*1
             row.showed = row.showed+''
             this.EdiData = Object.assign({},row);
-            console.log(this.EdiData,"你好世界阿萨德")
-        }
+        },
+
+        //显示图片上传框 type:上传图片的类型 proportion:上传图片的比例 IMAGE_iNDEX:是删除还是编辑的标识
+        UpLoadShow(type,proportion,IMAGE_iNDEX){
+            this.ImgType = type;
+            this.proportion = proportion;
+            this.IMAGE_iNDEX = IMAGE_iNDEX;
+            this.$refs.UploadImg.showDialog(true)
+        },
+
+        //图片赋值
+        GetDataImg(ImgUrl){
+            if(this.IMAGE_iNDEX == 1){
+                this.AddData.posterImg = ImgUrl;
+            }else{
+
+            }
+        },
     }
 }
 </script>
 <style scoped>
-
+.avatar-uploader{
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+.avatar-uploader .avatar-uploader-icon,.avatar-uploader img{
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+}
 </style>
