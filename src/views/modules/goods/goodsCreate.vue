@@ -70,7 +70,7 @@
             </el-form-item> 
             <el-form-item label="商品失效时间" :label-width="formLabelWidth"  prop="invalidTime">
                 <el-date-picker v-model="AddData.invalidTime"    type="date" value-format="timestamp" format="yyyy 年 MM 月 dd 日" placeholder="选择日期">
-                </el-date-picker>失效时间：{{AddData.invalidTime}}
+                </el-date-picker>
             </el-form-item> 
             <el-form-item label="商品类型" :label-width="formLabelWidth"  prop="goodType">
                 <el-radio v-model="AddData.goodType" label="1">自营商品</el-radio>
@@ -79,7 +79,8 @@
                 <!-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> -->
             </el-form-item>
             <el-form-item label="商品详情" :label-width="formLabelWidth"  prop="content">
-                <Editor />
+                <Editor :Value="AddData.content" ref="Editor" @Set_Content="Get_ContentValue"/>
+                <p>内容： {{AddData.content}}</p>
             </el-form-item>   
             <el-form-item label="商品缩略图" :label-width="formLabelWidth"  prop="thumbnail">
                 <div class="avatar-uploader" @click="UpLoadShow(1,1)"><img v-if="AddData.thumbnail" :src="AddData.thumbnail" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></div>
@@ -116,7 +117,7 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="AddShow = false">取 消</el-button>
+            <el-button @click="CloseGoods">取 消</el-button>
             <el-button type="primary" @click="addData">确 定</el-button>
         </div>
     </section>
@@ -258,12 +259,14 @@ export default {
         //添加用户的等级
         addData(){
             let that = this;
+            that.$refs.Editor.getContent(); //商品详情
             this.$refs['AddruleForm'].validate((valid) => {
             if (valid) {
                 API.AddGoods(that.AddData).then(res => {
                     if(res.code == 0){
                         that.$message({ message: '添加成功', type: 'success'});
                         that.AddData = {}
+                        that.$router.push('/goods-goodsList')
                     }else{
                         that.$message.error('添加失败');
                     }
@@ -273,6 +276,17 @@ export default {
                 return false;
             }
             });
+        },
+
+        //取消添加
+        CloseGoods(){
+            this.$router.push('/goods-goodsList')
+        },
+        
+        //Conten字段赋值
+        Get_ContentValue(data){
+          console.log("过来了吗",data)
+          this.AddData.content = data
         },
 
         //获取商品分类

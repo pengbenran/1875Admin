@@ -61,7 +61,7 @@
             <el-form-item label="付款类型" :label-width="formLabelWidth"  prop="payType">
                 <el-radio v-model="AddData.payType" label="1">微信支付</el-radio>
                 <el-radio v-model="AddData.payType" label="2">余额支付</el-radio>
-                <!-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> -->
+                <!-- <  !-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> --> 
             </el-form-item>
             <el-form-item label="积分抵扣金额" :label-width="formLabelWidth"  prop="pointAmount">
                 <el-input v-model="AddData.pointAmount" placeholder="请输入内容" autocomplete="off">
@@ -78,8 +78,8 @@
                 <el-radio v-model="AddData.goodType" label="3">优惠券商品</el-radio>
                 <!-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> -->
             </el-form-item>
-            <el-form-item label="商品详情" :label-width="formLabelWidth"  prop="thumbnail">
-                <Editor/>
+            <el-form-item label="商品详情" :label-width="formLabelWidth"  prop="content">
+                <Editor ref="Editor" @Set_Content="Get_ContentValue"/>
             </el-form-item>   
             <el-form-item label="商品缩略图" :label-width="formLabelWidth"  prop="thumbnail">
                 <div class="avatar-uploader" @click="UpLoadShow(1,1)"><img v-if="AddData.thumbnail" :src="AddData.thumbnail" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></div>
@@ -116,8 +116,8 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="AddShow = false">取 消</el-button>
-            <el-button type="primary" @click="addData">确 定</el-button>
+            <el-button @click="Close">取 消</el-button>
+            <el-button type="primary" @click="UpData">确 定</el-button>
         </div>
     </section>
     <!--商品分类添加-->
@@ -156,72 +156,28 @@ export default {
            },
            formLabelWidth:'120px',
            AddDatarules:{
-             sn:[
-                { required: true, message: '请输入编号', trigger: 'blur' },
-             ],
-             goodName:[
-                { required: true, message: '请输入商品名称', trigger: 'blur' },
-             ],
-             title:[
-                { required: true, message: '请输入商品标题', trigger: 'blur' },
-             ],
-             showPrice:[
-                { required: true, message: '请输入展示价格', trigger: 'blur' },
-             ],
-             cost:[
-                { required: true, message: '请输入成本价', trigger: 'blur' },
-             ],
-             price:[
-                { required: true, message: '请输入价格', trigger: 'blur' },
-             ],
-             sort:[
-                { required: true, message: '请设置排序', trigger: 'blur' },
-             ],
-             hot:[
-                { required: true, message: '请设置是否热销', trigger: 'blur' },
-             ],
-             status:[
-                { required: true, message: '请设置商品状态', trigger: 'blur' },
-             ],
-             catName:[
-                { required: true, message: '请设置分类', trigger: 'blur' },
-             ],
-             region:[
-                { required: true, message: '请设置区域', trigger: 'blur' },
-             ],
-             payType:[
-                { required: true, message: '请设置付款类型', trigger: 'blur' },
-             ],
-             thumbnail:[
-                { required: true, message: '设置商品缩略图', trigger: 'blur' },
-             ],
-             images:[
-                { required: true, message: '请设置轮播图', trigger: 'blur' },
-             ],
-             posterImg:[
-                { required: true, message: '请设置分享海报', trigger: 'blur' },
-             ],
-             showSales:[
-                { required: true, message: '请设置展示销量', trigger: 'blur' },
-             ],
-             sales:[
-                { required: true, message: '请设置销量', trigger: 'blur' },
-             ],
-             shopId:[
-                { required: true, message: '请设置店铺', trigger: 'blur' },
-             ],
-             redPacket:[
-                { required: true, message: '请设置是否使用红包', trigger: 'blur' },
-             ],
-             pointAmount:[
-                { required: true, message: '请设置积分抵扣金额', trigger: 'blur' },
-             ],
-             invalidTime:[
-                { required: true, message: '请设置失效时间', trigger: 'blur' },
-             ],
-             goodType:[
-                { required: true, message: '请设置商品类型', trigger: 'blur' },
-             ]
+             sn:[ { required: true, message: '请输入编号', trigger: 'blur' }, ],
+             goodName:[ { required: true, message: '请输入商品名称', trigger: 'blur' },],
+             title:[{ required: true, message: '请输入商品标题', trigger: 'blur' },],
+             showPrice:[{ required: true, message: '请输入展示价格', trigger: 'blur' },],
+             cost:[{ required: true, message: '请输入成本价', trigger: 'blur' },],
+             price:[ { required: true, message: '请输入价格', trigger: 'blur' },],
+             sort:[ { required: true, message: '请设置排序', trigger: 'blur' }, ],
+             hot:[{ required: true, message: '请设置是否热销', trigger: 'blur' },],
+             status:[{ required: true, message: '请设置商品状态', trigger: 'blur' },],
+             catName:[ { required: true, message: '请设置分类', trigger: 'blur' },],
+             region:[ { required: true, message: '请设置区域', trigger: 'blur' }, ],
+             payType:[ { required: true, message: '请设置付款类型', trigger: 'blur' },],
+             thumbnail:[ { required: true, message: '设置商品缩略图', trigger: 'blur' },],
+             images:[{ required: true, message: '请设置轮播图', trigger: 'blur' },],
+             posterImg:[ { required: true, message: '请设置分享海报', trigger: 'blur' },],
+             showSales:[ { required: true, message: '请设置展示销量', trigger: 'blur' },],
+             sales:[{ required: true, message: '请设置销量', trigger: 'blur' },],
+             shopId:[ { required: true, message: '请设置店铺', trigger: 'blur' },],
+             redPacket:[ { required: true, message: '请设置是否使用红包', trigger: 'blur' },],
+             pointAmount:[ { required: true, message: '请设置积分抵扣金额', trigger: 'blur' },],
+             invalidTime:[ { required: true, message: '请设置失效时间', trigger: 'blur' },],
+             goodType:[{ required: true, message: '请设置商品类型', trigger: 'blur' },]
            },
            goodsCat:[],
            goodsCatRoot:[],
@@ -256,14 +212,43 @@ export default {
       this.AddData.goodType = this.AddData.goodType + '';
       this.AddData.invalidTime = new Date(this.AddData.invalidTime).getTime();
       this.AddData.imagesList = this.AddData.images.split(',')
+      this.$refs.Editor.setContent(this.AddData.content);  //content赋值
       this.goodsCatOptionValue();
-      console.log("商品数据",this.AddData)
     },
     methods: {
         ...mapActions('good',['Get_GoodsCatData']),
-        addData(){
-
+        UpData(){
+            let that = this;
+            that.$refs.Editor.getContent(); //商品详情
+            this.$refs['AddruleForm'].validate((valid) => {
+            if (valid) {
+                API.UpdataGoods(that.AddData).then(res => {
+                    if(res.code == 0){
+                        that.$message({message:'编辑成功',type:'success'})
+                        this.$router.push('/goods-goodsList')
+                        that.EditShow = false;
+                    }else{
+                        that.$message.error('添加失败');                    
+                    }
+                }).catch(err => {})
+            } else {
+                console.log('error submit!!');
+                return false;
+            }
+            });    
         },
+
+         //Conten字段赋值
+        Get_ContentValue(data){
+          console.log("过来了吗",data)
+          this.AddData.content = data
+        },
+        
+        //点击取消
+        Close(){
+            this.$router.push('/goods-goodsList')
+        },
+
         //获取商品分类
         GetGoodsCatData(){
             let that = this;
@@ -289,15 +274,12 @@ export default {
         goodsCatOptionValue(){
             let that = this;
             let CatValue = that.goodsCat.find(f => f.catId == this.AddData.catId);
-            console.log("查看数据阿萨德",CatValue)
             if(CatValue.root == 1){
                that.AddData.catName1 = CatValue.name
             }else{
                that.AddData.catName1 = that.goodsCat.find(f => f.catId == CatValue.parentId).name;
                that.AddData.catName2 = CatValue.name;
             }
-            
-            console.log(that.AddData.catName2,that.AddData.catName1,"分类的值")
         },
 
         //分类级联选择（暂时无用）

@@ -78,7 +78,7 @@
       that.catBackGroundList()
       that.getGoodList()
     },
-    components: { uploadImg,goodThingsHotAddDialog,goodThingsHotEditDialog},
+    components: {uploadImg,goodThingsHotAddDialog,goodThingsHotEditDialog},
     methods: {
           //编辑
           showEditDialog(index,row){

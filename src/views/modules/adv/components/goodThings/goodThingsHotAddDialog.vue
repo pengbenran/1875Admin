@@ -37,7 +37,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button  @click.native="addFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click='submit([gridData[0]])'>确 定</el-button>
+          <el-button type="primary" @click='submit'>确 定</el-button>
         </div>
       </el-dialog>
 </template>
@@ -53,38 +53,31 @@
 		},
     methods:{
       handleSelectionChange(val){
-        console.log('aaaaa',val);
+        let that=this
+        that.addFrom.goodId=val.map(item=>{
+          return item.goodId
+        })
       },  
       showAddDialog(){
             let that = this;
             that.addFormVisible = true;
-            setTimeout(function(res){
-                that.$refs.multipleTable.toggleRowSelection(that.gridData[1]);
-            },500)
-           
-            // that.$refs.multipleTable.toggleRowSelection(that.gridData[1]);
       },
       ImgClick(){
-        console.log('that.$refs.multipleTable',this.$refs.multipleTable)
         this.$emit('ImgClick');
-         // console.log('that.$refs.multipleTable',that.$refs.multipleTable)
       },
       submit(rows){
         let that=this
-        console.log('that.$refs.multipleTable',that.$refs.multipleTable)
-         that.$refs.multipleTable.toggleRowSelection(rows[0]);
-        // Api_adv.catBackGroundAdd(that.addFrom).then(function(res){
-        //   if(res.code==0){
-        //    that.$message.success({
-        //     showClose: true,
-        //     message: "新增成功",
-        //     duration: 2000
-        //   });
-        //    that.addFormVisible = false;
-        //    that.$emit('catBackGroundList');
-        //  }
-        //   console.log(res);
-        // })
+        Api_adv.catBackGroundAdd(that.addFrom).then(function(res){
+          if(res.code==0){
+           that.$message.success({
+            showClose: true,
+            message: "新增成功",
+            duration: 2000
+          });
+           that.addFormVisible = false;
+           that.$emit('catBackGroundList');
+         }
+        })
       }
     }
 	}

@@ -38,7 +38,7 @@
       <!-- 编辑界面 -->
       <costEffectiveEditDialog :editFrom='editFrom' ref="costEffectiveEditDialog" @ImgClick="ImgClick" @getHomeBanner="getHomeBanner"></costEffectiveEditDialog>
       <!-- 关联商品 -->
-      <costEffectiveGoodConnectDialog :goodsListData='goodsListData' ref="costEffectiveGoodConnectDialog"></costEffectiveGoodConnectDialog>
+      <costEffectiveGoodConnectDialog :goodsListData='goodsListData' ref="costEffectiveGoodConnectDialog" :connectGood='connectGood'></costEffectiveGoodConnectDialog>
       <!-- 图片裁剪 -->
       <uploadImg :proportion="proportion" :type="type" ref='UploadImg' @GetDataImg='GetDataImg'></uploadImg>
     </el-col>
@@ -52,6 +52,7 @@
   import costEffectiveEditDialog from './components/costEffective/costEffectiveEditDialog'
   import costEffectiveGoodConnectDialog from './components/costEffective/costEffectiveGoodConnectDialog'
   import Api_adv from '@/api/adv'
+  import Api_goodList from '@/api/goods'
   export default {
     data () {
       return {
@@ -64,18 +65,36 @@
           status:1,
           sorts:''
         },
+        listQuery:{
+          page: 1,
+          limit: 10,
+        },
         showCropper:false,
         proportion:2.8,
         type:2,
+        formLabelWidth:'120px',
         btnLoading:false,
+        goodsListData:[],
+        connectGood:[]
       }
     },
     mounted () {
       let that=this
       that.getHomeBanner()
+      that.getGoodList()
+      that.bannerGoodlist()
     },
     components: { uploadImg,costEffectiveAddDialog,costEffectiveEditDialog,costEffectiveGoodConnectDialog},
     methods: {
+      // 获取已经人气关联的商品
+      bannerGoodlist(){
+        let that=this
+        let params={}
+        params.type=3
+        Api_adv.bannerGoodlist(params).then(function(res){
+          that.connectGood=res
+        })
+      },
       // 获取首页banner
       getHomeBanner(){
         let params={}
@@ -84,6 +103,12 @@
         params.type=3
         Api_adv.HomeBannerList(params).then(function(res){
           that.bannerList=res.rows
+        })
+      },
+       getGoodList(){
+        let that=this
+        Api_goodList.GoodsList(that.listQuery).then(function(res){
+          that.goodsListData=res.rows
         })
       },
       // 删除首页banner
