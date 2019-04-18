@@ -58,6 +58,16 @@
             <el-form-item label="区域" :label-width="formLabelWidth"  prop="region">
                 <el-input v-model="AddData.region" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item> 
+            <el-form-item label="地铁" :label-width="formLabelWidth"  prop="subway">
+                <div class="FlexWarp">
+                <div v-for="(item,index) in AddData.subwayList" :key="index" :index='index' style="margin-right:4px;">
+                    <el-select v-model="item.value" placeholder="请选择"  @change='subwayChangeSelect'>
+                        <el-option v-for="itemc in item.options" :key="itemc.id" :label="itemc.name" :value="itemc.id"></el-option>
+                    </el-select>
+                </div>
+                </div>
+                <!-- <el-input v-model="AddData.subway" placeholder="请输入内容" autocomplete="off"></el-input> -->
+            </el-form-item> 
             <el-form-item label="付款类型" :label-width="formLabelWidth"  prop="payType">
                 <el-radio v-model="AddData.payType" label="1">微信支付</el-radio>
                 <el-radio v-model="AddData.payType" label="2">余额支付</el-radio>
@@ -80,16 +90,16 @@
             </el-form-item>
             <el-form-item label="商品详情" :label-width="formLabelWidth"  prop="content">
                 <Editor :Value="AddData.content" ref="Editor" @Set_Content="Get_ContentValue"/>
-                <p>内容： {{AddData.content}}</p>
+                <p>内容:{{AddData.content}}</p>
             </el-form-item>   
             <el-form-item label="商品缩略图" :label-width="formLabelWidth"  prop="thumbnail">
                 <div class="avatar-uploader" @click="UpLoadShow(1,1)"><img v-if="AddData.thumbnail" :src="AddData.thumbnail" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></div>
             </el-form-item>   
             <el-form-item label="轮播图" :label-width="formLabelWidth"  prop="images">
-                <div class="avatar-uploader imagesBoxList" v-for="(item,index) in AddData.imagesList" :key="item" :index='index' @click="UpLoadShow(2,1,index)">
+                <div class="avatar-uploader imagesBoxList" v-for="(item,index) in AddData.imagesList" :key="item" :index='index' @click="UpLoadShow(2,1.777,index)">
                     <img :src="item" class="avatar boxImg">
                 </div>
-                <div class="avatar-uploader imagesBoxList" @click="UpLoadShow(2,1)">
+                <div class="avatar-uploader imagesBoxList" @click="UpLoadShow(2,1.777)">
                     <i class="el-icon-plus avatar-uploader-icon boxImg"></i>
                 </div>
             </el-form-item>   
@@ -105,15 +115,39 @@
             <el-form-item label="真实的销售量" :label-width="formLabelWidth"  prop="sales">
                 <el-input v-model="AddData.sales" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>
+            <el-form-item label="库存" :label-width="formLabelWidth"  prop="inventory">
+                <el-input v-model="AddData.inventory" placeholder="请输入内容" autocomplete="off"></el-input>
+            </el-form-item>
             <el-form-item label="商店ID" :label-width="formLabelWidth"  prop="shopId">
                 <el-select v-model="AddData.shopId" placeholder="请选择">
-                   <el-option v-for="item in shopList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                   <el-option v-for="item in ShopDataList" :key="item.value" :label="item.shopName" :value="item.shopId"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="是否可以使用红包" :label-width="formLabelWidth"  prop="redPacket">
                 <el-radio v-model="AddData.redPacket" label="1">是</el-radio>
                 <el-radio v-model="AddData.redPacket" label="2">否</el-radio>
                 <!-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> -->
+            </el-form-item>
+            <el-form-item label="购买获得佣金" :label-width="formLabelWidth"  prop="fixedCommission">
+                <div class="YongMoney" v-for="(item,index) in MemberDataList" :index ='index' :key="item.distributorLvId">
+                    <el-tag style="margin-right:12px;">{{item.name}}</el-tag>
+                    <el-input v-model="item.value" placeholder="请输入内容" autocomplete="off">
+                        <template slot="append">元</template>
+                    </el-input>
+                </div>
+            </el-form-item>
+            <el-form-item label="购买获取积分" :label-width="formLabelWidth"  prop="buyIntegral">
+                <el-input v-model="AddData.buyIntegral" placeholder="请输入内容" autocomplete="off">
+                    <template slot="append">分</template>
+                </el-input>
+            </el-form-item>
+            <el-form-item label="分享获得积分" :label-width="formLabelWidth"  prop="shareIntegral">
+                <el-input v-model="AddData.shareIntegral" placeholder="请输入内容" autocomplete="off">
+                    <template slot="append">分</template>
+                </el-input>
+            </el-form-item>
+            <el-form-item label="上下线佣金" :label-width="formLabelWidth"  prop="lineCommission">
+                <el-input v-model="AddData.lineCommission" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -130,6 +164,8 @@
 </template>
 <script>
 import API from "@/api/goods";
+import APIMember from "@/api/member";
+import APISys from "@/api/sys";
 import Editor from "@/components/ueditor/ueditor";
 import Uploadimg from "@/components/UpLoadImg/UpLoadImg";
 import Store from "@/store/index"
@@ -153,7 +189,10 @@ export default {
                redPacket:'2',
                status:'2',
                hot:'2',
-               goodType:'3'
+               goodType:'3',
+               fixedCommission:'', //分享佣金
+               subway:'',
+               subwayList:[{value:'',options:[]}], //关于地铁的数据
            },
            formLabelWidth:'120px',
            AddDatarules:{
@@ -222,12 +261,20 @@ export default {
              ],
              goodType:[
                 { required: true, message: '请设置商品类型', trigger: 'blur' },
+             ],
+             subway:[
+                { required: true, message: '请设置地铁信息', trigger: 'blur' },
+             ],
+             inventory:[
+                { required: true, message: '请设置库存信息', trigger: 'blur' },
              ]
            },
            goodsCat:[],
            goodsCatRoot:[],
            goodCatChiler:[],
-           shopList:[
+           MemberDataList:[],
+           DictionaryDataList:[],
+           ShopDataList:[
                 {value: '1',label: '马登的小店'},
                 {value: '2',label: '马登的小店'}
            ],
@@ -252,13 +299,18 @@ export default {
         },
     },
     mounted () {
-      this.GetGoodsCatData();
+      this.GetGoodsCatData(); //获取所有的分类
+      this.GetShareDataList(); //获取所有的等级
+      this.GetShopDataList(); //获取所有店铺
+      this.GetDictionaryData(); //获取字典数据
     },
     methods: {
-        ...mapActions('good',['Get_GoodsCatData']),
+        ...mapActions('good',['Get_GoodsCatData','Set_MemberLvList','Set_ShopList','Set_DictionaryList']),
         //添加用户的等级
         addData(){
             let that = this;
+            that.UpAddData(); //对添加数据进行处理
+            console.log(that.AddData,"添加时候的数据")
             that.$refs.Editor.getContent(); //商品详情
             this.$refs['AddruleForm'].validate((valid) => {
             if (valid) {
@@ -285,7 +337,6 @@ export default {
         
         //Conten字段赋值
         Get_ContentValue(data){
-          console.log("过来了吗",data)
           this.AddData.content = data
         },
 
@@ -310,13 +361,100 @@ export default {
             }
         },
 
-        //分类级联选择（暂时无用）
-        handleItemChange(val){
-            let that = this;
-            let atr = that.goodsCatRoot.findIndex(Dres => Dres.name == val)
-            that.goodsCatRoot[atr].cities = that.goodsCat.filter(Mres => Mres.name == val)
+        //获取所有的店铺列表
+        GetShopDataList(){
+            let that = this; 
+            if(Store.state.good.ShopDataList.length > 0){
+                that.ShopDataList = Store.state.good.ShopDataList
+            }else{
+                API.GetShopList({ page: 1,limit: 30}).then(res => {
+                        if(res != undefined){
+                            that.ShopDataList = res.rows;
+                            that.Set_ShopList(that.ShopDataList)
+                        }else{
+                            that.$message.error('分享师等级列表并未请求到');
+                        }
+                    }).catch(err => {
+                        that.$message.error('分享师等级列表并未请求到');
+                })
+            }
         },
-        
+
+        //获得所有分享师列表
+        GetShareDataList(){
+            let that = this;
+            if(Store.state.good.MemberDataList.length > 0){
+                that.MemberDataList = Store.state.good.MemberDataList;
+            }else{
+                APIMember.getdistributorLvList({ page: 1,limit: 20}).then(res => {
+                    if(res != undefined){
+                        that.MemberDataList = res.rows.map(Mres => {
+                            Mres.value = 0;
+                            return Mres;
+                        });
+                        that.Set_MemberLvList(that.MemberDataList)
+                        console.log(that.MemberDataList,"会员等级")
+                    }else{
+                        that.$message.error('分享师等级列表并未请求到');
+                    }
+                }).catch(err => {
+                    that.$message.error('分享师等级列表并未请求到');
+                })
+            }   
+        },
+
+        //获取字典数据
+        GetDictionaryData(){
+            let that = this;
+            if(Store.state.good.DictionaryDataList.length > 0){
+                that.DictionaryDataList = Store.state.good.DictionaryDataList;
+            }else{
+                APISys.DictionaryList({page: 1,limit: 20}).then(res =>{
+                    if(res != undefined){
+                        that.DictionaryDataList = res.rows;
+                        console.log("查看一下数据1111",that.DictionaryDataList)
+                        that.AddData.subwayList[0].options = that.DictionaryDataList
+                        that.Set_DictionaryList(Object.assign({},that.DictionaryDataList))
+                    }else{
+                        that.$message.error('未获取到字典数据');
+                    }
+                }).catch(err => {
+                    that.$message.error('未获取到字典数据');
+                })
+            }
+        },
+
+        //根据地铁数据整理
+        subwayChangeSelect(e){
+            let that = this;
+            APISys.GetChildDictionary(Object.assign({},{page: 1,limit: 100},{parentId:e})).then(res =>{
+                console.log("查看字典自己数据",res)
+                if(res != undefined && res.rows.length > 0){
+                    let data = {
+                        value:'',
+                        options:res.rows
+                    }
+                    this.AddData.subwayList.push(data)
+                }else if(res != undefined &&  res.rows.length == 0){
+                   this.AddData.subway = e
+                }
+            }).catch(err => {
+                this.AddData.subway = e
+                console.log("报错过来",err)
+            })
+        },
+
+        //对数据进行处理的时间
+        UpAddData(){
+            let that = this;
+            let MenberLv = [];
+            that.MemberDataList.map(Mres => {
+                MenberLv.push(Mres.distributorLvId+'|'+Mres.value);
+            })
+            that.AddData.fixedCommission = MenberLv.join(',')
+            console.log(that.fixedCommission,"进来处理数据了吗")
+        },
+
         //生成编号
         generateSn(){
             this.AddData.sn = random_No(3)
@@ -389,6 +527,14 @@ export default {
 
 .imagesBoxList{
     display: inline-block;height: 189px;width: 336px;
+}
+
+.YongMoney{
+    display: flex;align-items: center;
+}
+.FlexWarp{
+    display: flex;
+    align-items: center;
 }
 
 </style>

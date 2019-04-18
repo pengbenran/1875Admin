@@ -50,6 +50,53 @@ export default {
     //批量删除
     BatchRemoveGoodsCat:params => {
         return API.DELETE('/good/goodCat/batchRemove',params)
-    }
+    },
 
+
+
+    //获取店铺列表
+    GetShopList:params => {
+        return API.GET('/good/shop/list',params)
+    },
+
+    //添加店铺
+    AddShop:params => {
+        return API.POST('/good/shop/save',params)
+    },
+
+    
+    //店铺修改
+    UpdataShop:params => {
+        return API.PUT('/good/shop/update',params)
+    },
+
+    //店铺删除
+    DeleteShop:params => {
+        return API.DELETE('/good/shop/remove',params)
+    },
+
+    //批量删除
+    BatchRemoveShop:params => {
+        return API.DELETE('/good/shop/batchRemove',params)
+    },
+
+    //根据经纬度获取详细信息
+    // GetAddressInfo:params => {
+    //     return API.GET('/good/shop/batchRemove',params)
+    // },
+
+    //绑定店铺用户
+    ShopMenber:params => {
+        return API.POST('/good/shop/member',params)
+    },
+
+    //绑定店铺用户
+    GetShopMenber:params => {
+        return API.GET('/good/shop/member',params)
+    },
+
+    //根据ID进行删除
+    DeleteShopMenber:params => {
+        return API.DELETE('/good/shop/member',params)
+    }
 }

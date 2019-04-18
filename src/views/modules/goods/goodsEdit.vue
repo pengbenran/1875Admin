@@ -58,6 +58,16 @@
             <el-form-item label="区域" :label-width="formLabelWidth"  prop="region">
                 <el-input v-model="AddData.region" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item> 
+            <el-form-item label="地铁" :label-width="formLabelWidth"  prop="subway">
+                <div class="FlexWarp">
+                <div v-for="(item,index) in AddData.subwayList" :key="index" :index='index' style="margin-right:4px;">
+                    <el-select v-model="item.value" placeholder="请选择"  @change='subwayChangeSelect' >
+                        <el-option v-for="itemc in item.options" :key="itemc.id" :label="itemc.name" :value="itemc.id"></el-option>
+                    </el-select>
+                </div>
+                </div>
+                <!-- <el-input v-model="AddData.subway" placeholder="请输入内容" autocomplete="off"></el-input> -->
+            </el-form-item> 
             <el-form-item label="付款类型" :label-width="formLabelWidth"  prop="payType">
                 <el-radio v-model="AddData.payType" label="1">微信支付</el-radio>
                 <el-radio v-model="AddData.payType" label="2">余额支付</el-radio>
@@ -104,15 +114,39 @@
             <el-form-item label="真实的销售量" :label-width="formLabelWidth"  prop="sales">
                 <el-input v-model="AddData.sales" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>
+            <el-form-item label="库存" :label-width="formLabelWidth"  prop="inventory">
+                <el-input v-model="AddData.inventory" placeholder="请输入内容" autocomplete="off"></el-input>
+            </el-form-item>
             <el-form-item label="商店ID" :label-width="formLabelWidth"  prop="shopId">
                 <el-select v-model="AddData.shopId" placeholder="请选择">
-                   <el-option v-for="item in shopList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                   <el-option v-for="item in ShopDataList" :key="item.value" :label="item.shopName" :value="item.shopId"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="是否可以使用红包" :label-width="formLabelWidth"  prop="redPacket">
                 <el-radio v-model="AddData.redPacket" label="1">是</el-radio>
                 <el-radio v-model="AddData.redPacket" label="2">否</el-radio>
                 <!-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> -->
+            </el-form-item>
+            <el-form-item label="分享获得佣金" :label-width="formLabelWidth"  prop="fixedCommission">
+                <div class="YongMoney" v-for="(item,index) in MemberDataList" :index ='index' :key="item.distributorLvId">
+                    <el-tag style="margin-right:12px;">{{item.name}}</el-tag>
+                    <el-input :value="item.value" placeholder="请输入内容" autocomplete="off">
+                        <template slot="append">元</template>
+                    </el-input>
+                </div>
+            </el-form-item>
+            <el-form-item label="购买获取积分" :label-width="formLabelWidth"  prop="buyIntegral">
+                <el-input v-model="AddData.buyIntegral" placeholder="请输入内容" autocomplete="off">
+                    <template slot="append">分</template>
+                </el-input>
+            </el-form-item>
+            <el-form-item label="分享获得积分" :label-width="formLabelWidth"  prop="shareIntegral">
+                <el-input v-model="AddData.shareIntegral" placeholder="请输入内容" autocomplete="off">
+                    <template slot="append">分</template>
+                </el-input>
+            </el-form-item>
+            <el-form-item label="上下线佣金" :label-width="formLabelWidth"  prop="lineCommission">
+                <el-input v-model="AddData.lineCommission" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -129,6 +163,8 @@
 </template>
 <script>
 import API from "@/api/goods";
+import APIMember from "@/api/member";
+import APISys from "@/api/sys";
 import Editor from "@/components/ueditor/ueditor";
 import Uploadimg from "@/components/UpLoadImg/UpLoadImg";
 import Store from "@/store/index"
@@ -152,7 +188,10 @@ export default {
                redPacket:'2',
                status:'2',
                hot:'2',
-               goodType:'3'
+               goodType:'3',
+               fixedCommission:'', //分享佣金
+               subway:'',
+               subwayList:[{value:'',options:[]}], //关于地铁的数据
            },
            formLabelWidth:'120px',
            AddDatarules:{
@@ -177,12 +216,16 @@ export default {
              redPacket:[ { required: true, message: '请设置是否使用红包', trigger: 'blur' },],
              pointAmount:[ { required: true, message: '请设置积分抵扣金额', trigger: 'blur' },],
              invalidTime:[ { required: true, message: '请设置失效时间', trigger: 'blur' },],
-             goodType:[{ required: true, message: '请设置商品类型', trigger: 'blur' },]
+             goodType:[{ required: true, message: '请设置商品类型', trigger: 'blur' },],
+             subway:[{ required: true, message: '请设置地铁信息', trigger: 'blur' },],
+             inventory:[{ required: true, message: '请设置库存信息', trigger: 'blur' },]
            },
            goodsCat:[],
            goodsCatRoot:[],
            goodCatChiler:[],
-           shopList:[
+           MemberDataList:[],
+           DictionaryDataList:[],
+           ShopDataList:[
                 {value: '1',label: '马登的小店'},
                 {value: '2',label: '马登的小店'}
            ],
@@ -203,22 +246,32 @@ export default {
             return (new Date()).getTime();
         },
     },
-    mounted () {
-      this.GetGoodsCatData();
-      this.AddData = this.$route.query;
+    async mounted () {
+      await this.GetGoodsCatData(); //获取所有的分类
+      await this.GetShareDataList(); //获取所有的等级
+      await this.GetShopDataList(); //获取所有店铺
+      this.AddData = Object.assign({},this.$route.query);
+      console.log("查看一下穿过来的数据",this.$route.query)
+      this.UpEditData();
       this.AddData.payType = this.AddData.payType + '';
       this.AddData.hot = this.AddData.hot + '';
       this.AddData.status = this.AddData.status + '';
       this.AddData.goodType = this.AddData.goodType + '';
+      this.AddData.shopId = parseInt(this.AddData.shopId);
       this.AddData.invalidTime = new Date(this.AddData.invalidTime).getTime();
-      this.AddData.imagesList = this.AddData.images.split(',')
+      this.AddData.imagesList = this.AddData.images.split(',');
+      this.$set(this.AddData,'catName1','');
+      this.$set(this.AddData,'subwayList',[{value:'',options:[]}]);
       this.$refs.Editor.setContent(this.AddData.content);  //content赋值
+      await this.GetDictionaryData(); //获取字典数据
       this.goodsCatOptionValue();
+      console.log(this.AddData,"查看整理后的数据",this.ShopDataList)
     },
     methods: {
-        ...mapActions('good',['Get_GoodsCatData']),
+        ...mapActions('good',['Get_GoodsCatData','Set_MemberLvList','Set_ShopList','Set_DictionaryList']),
         UpData(){
             let that = this;
+            that.UpAddData();
             that.$refs.Editor.getContent(); //商品详情
             this.$refs['AddruleForm'].validate((valid) => {
             if (valid) {
@@ -250,45 +303,159 @@ export default {
         },
 
         //获取商品分类
-        GetGoodsCatData(){
+        async GetGoodsCatData(){
             let that = this;
-            let arr = [];
+            let arr = Store.state.good.goodsCat;
             if(Store.state.good.goodsCat.length > 0){
-                that.goodsCat = Store.state.good.goodsCat
+                that.goodsCat = Object.assign([],Store.state.good.goodsCat);
                 that.goodsCatRoot = that.goodsCat.filter(f => f.root == 1)
             }else{
                 let data = { page: 1,limit: 20}
-                API.GetGoodsCat(data).then(res => {
-                    if(res != undefined){
+                let res = await API.GetGoodsCat(data).catch(err =>{});
+                if(res != undefined){
                         that.goodsCat = res.rows;
+                        console.log("分类进来211",that.goodsCat)
                         that.goodsCatRoot = that.goodsCat.filter(f => f.root == 1);
-                        that.Get_GoodsCatData(res.rows);
+                        that.Get_GoodsCatData(Object.assign([],that.goodsCat));
                     }else{
                         that.$message.error('商品列表并未请求到');
-                    }
-                }).catch(err =>{});
+                }
             }
+        },
+
+        //获取所有的店铺列表
+        GetShopDataList(){
+            let that = this; 
+            if(Store.state.good.ShopDataList.length > 0){
+                that.ShopDataList = Object.assign([],Store.state.good.ShopDataList);
+            }else{
+                API.GetShopList({ page: 1,limit: 30}).then(res => {
+                        if(res != undefined){
+                            that.ShopDataList = res.rows;
+                            that.Set_ShopList(Object.assign([],that.ShopDataList))
+                        }else{
+                            that.$message.error('分享师等级列表并未请求到');
+                        }
+                    }).catch(err => {
+                        that.$message.error('分享师等级列表并未请求到');
+                })
+            }
+        },
+
+        //获得所有分享师列表
+        async GetShareDataList(){
+            let that = this;
+                let res = await APIMember.getdistributorLvList({ page: 1,limit: 20}).catch(err => {
+                    that.$message.error('分享师等级列表并未请求到');
+                })
+                if(res != undefined){
+                    that.MemberDataList = res.rows.map(Mres => {
+                        Mres.value = 0;
+                        return Mres;
+                    });
+                    // that.Set_MemberLvList(Object.assign({},that.MemberDataList))
+                }else{
+                    that.$message.error('分享师等级列表并未请求到');
+                }
+            
+        },
+
+        //获取所有的店铺列表
+        GetShopDataList(){
+            let that = this; 
+            if(Store.state.good.ShopDataList.length > 0){
+                that.ShopDataList = Object.assign([],Store.state.good.ShopDataList);
+            }else{
+                API.GetShopList({ page: 1,limit: 30}).then(res => {
+                        if(res != undefined){
+                            that.ShopDataList = res.rows;
+                            that.Set_ShopList(Object.assign([],that.ShopDataList))
+                        }else{
+                            that.$message.error('分享师等级列表并未请求到');
+                        }
+                    }).catch(err => {
+                        that.$message.error('分享师等级列表并未请求到');
+                })
+            }
+        },
+
+        //获取字典数据
+        GetDictionaryData(){
+            let that = this;
+            if(Store.state.good.DictionaryDataList.length > 0){
+                that.DictionaryDataList = Object.assign([],Store.state.good.DictionaryDataList);
+                that.AddData.subwayList[0].options = that.DictionaryDataList
+            }else{
+                APISys.DictionaryList({page: 1,limit: 20}).then(res =>{
+                    console.log("这里是字典数据",res)
+                    if(res != undefined){
+                        that.DictionaryDataList = res.rows;
+                        console.log(that.AddData.subwayList,"查看一下")
+
+                        that.AddData.subwayList[0].options = that.DictionaryDataList
+                        
+                        console.log("打印一下此时的数据",that.AddData.subwayList)
+                        that.Set_DictionaryList(Object.assign([],that.DictionaryDataList))
+                    }else{
+                        that.$message.error('未获取到字典数据');
+                    }
+                }).catch(err => {
+                    that.$message.error('未获取到字典数据');
+                })
+            }
+        },
+
+        //根据地铁数据整理
+        subwayChangeSelect(e){
+            let that = this;
+            console.log("进来了吗")
+            APISys.GetChildDictionary(Object.assign({},{page: 1,limit: 100},{parentId:e})).then(res =>{
+                if(res != undefined && res.rows.length > 0){
+                    let data = {
+                        value:'',
+                        options:res.rows
+                    }
+                    this.AddData.subwayList.push(data)
+                }else if(res != undefined &&  res.rows.length == 0){
+                   this.AddData.subway = e
+                }
+            }).catch(err => {
+                this.AddData.subway = e
+            })
+        },
+
+        //编辑时数据处理
+        UpEditData(){
+            let that = this;
+            // let ItemOptions = Object.assign([],that.MemberDataList);
+            console.log("数据1：",this.AddData.fixedCommission,"数据2：",that.MemberDataList,"数据3：")
+            this.AddData.fixedCommission.split(',').map(Mres => {
+                that.MemberDataList.find(Fres => Fres.distributorLvId == Mres.split('|')[0]).value =  Mres.split('|')[1]
+            })
+        },
+
+        //对数据进行处理的时间
+        UpAddData(){
+            let that = this;
+            let MenberLv = [];
+            that.MemberDataList.map(Mres => {
+                MenberLv.push(Mres.distributorLvId+'|'+Mres.value);
+            })
+            that.AddData.fixedCommission = MenberLv.join(',')
         },
 
         //商品编辑分类重新赋值
         goodsCatOptionValue(){
             let that = this;
             let CatValue = that.goodsCat.find(f => f.catId == this.AddData.catId);
+            console.log(that.goodsCat,"分类过来的数据：",CatValue,this.AddData)
             if(CatValue.root == 1){
-               that.AddData.catName1 = CatValue.name
+               that.AddData.catName1 = parseInt(CatValue.catId);
+               console.log("that.AddData.catName1:",that.AddData.catName1,that.goodsCatRoot)
             }else{
                that.AddData.catName1 = that.goodsCat.find(f => f.catId == CatValue.parentId).name;
-               that.AddData.catName2 = CatValue.name;
+               that.AddData.catName2 = parseInt(CatValue.catId);
             }
-        },
-
-        //分类级联选择（暂时无用）
-        handleItemChange(val){
-            let that = this;
-            let atr = that.goodsCatRoot.findIndex(Dres => Dres.name == val)
-            that.goodsCatRoot[atr].cities = that.goodsCat.filter(Mres => Mres.name == val)
-            // .push();
-            console.log(atr,"你好世界",val,that.goodsCatRoot)
         },
         
         //生成编号
@@ -363,5 +530,8 @@ export default {
 
 .imagesBoxList{
     display: inline-block;height: 189px;width: 336px;
+}
+.YongMoney{
+    display: flex;align-items: center;
 }
 </style>

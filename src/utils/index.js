@@ -68,3 +68,19 @@ export function random_No (J) {
   random_no = new Date().getTime() + random_no
   return random_no;
 }
+
+
+/**
+ * 异步挂载类库的方法
+ * 解决地图 无法加载出来的问题
+ */
+export function QqMap(key){
+    return new Promise (function (resolve,reject) {
+
+      var script =document.createElement('script')
+      script.type ='text/javascript'
+      script.src ='https://3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js'
+      document.body.appendChild(script)
+      resolve("111")
+    })
+}

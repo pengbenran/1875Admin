@@ -130,11 +130,13 @@ export default {
            IMAGE_iNDEX:1, //是删除还是编辑的标识
            AddData:{
            parentId:'',
-           root:'2'
+           root:'2',
+           img:''
            },
            EdiData:{
             parentId:'',
-            root:'2'
+            root:'2',
+            img:''
            },
            formLabelWidth:'120px',
            AddDatarules:{
@@ -190,7 +192,11 @@ export default {
                         that.$message({ message: '添加成功', type: 'success'});
                         that.$parent.GetGoodsCatList();
                         that.AddShow = false
-                        that.AddData = {}
+                        that.AddData = {
+                            img:'',
+                            parentId:'',
+                            root:'2'
+                        }
                     }else{
                     that.$message.error('添加失败');
                     }
@@ -257,10 +263,12 @@ export default {
 
         //图片赋值
         GetDataImg(ImgUrl){
+           
             if(this.IMAGE_iNDEX == 1){
-                this.AddData.posterImg = ImgUrl;
+                this.AddData.img = ImgUrl;
+                 console.log("分类的数据1231",ImgUrl,this.AddData.img)
             }else{
-
+                this.EdiData.img = ImgUrl;
             }
         },
     }

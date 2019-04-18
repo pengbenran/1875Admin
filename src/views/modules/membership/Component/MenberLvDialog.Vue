@@ -14,7 +14,7 @@
             </el-form-item>
             <el-form-item label="折扣大小" :label-width="formLabelWidth" prop="discount">
                 <el-input v-model="AddmenBerData.discount" placeholder="请输入内容" autocomplete="off"></el-input>
-                <el-alert style="padding:0px" title="注：80即为8折" type="success"></el-alert>
+                <el-alert style="padding:0px" title="注：0.8即为8折" type="success"></el-alert>
             </el-form-item>
             <el-form-item label="等级大小" :label-width="formLabelWidth" prop="rank">
                 <el-input v-model="AddmenBerData.rank" placeholder="请输入内容" autocomplete="off"></el-input>
@@ -54,7 +54,7 @@
             </el-form-item>
             <el-form-item label="折扣大小" :label-width="formLabelWidth" prop="discount">
                 <el-input type='number' v-model="EditmenBerData.discount" placeholder="请输入内容" autocomplete="off"></el-input>
-                <el-alert style="padding:0px" title="注：80即为8折" type="success"></el-alert>
+                <el-alert style="padding:0px" title="注：0.8即为8折" type="success"></el-alert>
             </el-form-item>
             <el-form-item label="等级大小" :label-width="formLabelWidth" prop="rank">
                 <el-input type='number' v-model="EditmenBerData.rank" placeholder="请输入内容" autocomplete="off"></el-input>
