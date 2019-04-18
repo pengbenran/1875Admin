@@ -13,17 +13,28 @@ module.exports = {
     assetsPublicPath: '/',
     // 代理列表, 是否开启代理通过[./dev.env.js]配置
     proxyTable: devEnv.OPEN_PROXY === false ? {} : {
-      '/proxyApi': {
-        target: 'http://demo.renren.io/renren-fast/',
+      '/Mapv1': {
+        target: 'https://apis.map.qq.com',
         changeOrigin: true,
         pathRewrite: {
-          '^/proxyApi': '/'
+          // /v1将代表target/v1 
+          '^/Mapv1': '/'
         }
-      }
+      },
+      // '/proxyApi': {
+      //   target: 'http://demo.renren.io/renren-fast/',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/proxyApi': '/'
+      //   }
+      // },
     },
 
     // Various Dev Server settings
-    host: '192.168.0.222', // can be overwritten by process.env.HOST
+
+    host: '192.168.0.223', // can be overwritten by process.env.HOST 
+    // host: 'localhost',
+
     port: 8001, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,
     errorOverlay: true,
