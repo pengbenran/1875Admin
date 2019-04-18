@@ -41,5 +41,12 @@ export default {
 	catBackGroundDel:params=>{
 		return API.DELETE('/advertisement/catBackground/remove',params)
 	},
-
+	// 特别划算模块跟今日爆品人气模块下关联商品
+	batchSave:params=>{
+		return API.POST('/advertisement/bannerGood/batchSave',params)
+	},
+	// 获取今日爆品人气模块下已经关联的商品
+	bannerGoodlist:params=>{
+		return API.GET('/advertisement/bannerGood/bannerGoodlist',params)
+	}
 }

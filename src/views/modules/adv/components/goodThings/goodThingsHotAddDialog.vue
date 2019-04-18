@@ -25,14 +25,18 @@
             <el-table ref="multipleTable":data="gridData" tooltip-effect="dark" style="width: 100%"
             @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column label="商品名称" prop="name">
+            <el-table-column label="商品名称" prop="goodName">
             </el-table-column>
-            <el-table-column prop="address" label="商品图片"></el-table-column>
+            <el-table-column label="商品图片">
+              <template slot-scope="scope">
+               <img :src="scope.row.thumbnail" width="80">
+              </template>
+            </el-table-column>
            </el-table>
           </el-form-item>   
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button>取 消</el-button>
+          <el-button  @click.native="addFormVisible = false">取 消</el-button>
           <el-button type="primary" @click='submit'>确 定</el-button>
         </div>
       </el-dialog>
@@ -40,18 +44,20 @@
 <script type="text/javascript">
   import Api_adv from '@/api/adv'
 	export default {
-		props: ['addFrom'],
+		props: ['addFrom','gridData'],
 		data () {
 			return {
 				addFormVisible:false,
 				formLabelWidth: '120px',
-        gridData: [],
 			}
 		},
     methods:{
-      handleSelectionChange(){
-
-      },
+      handleSelectionChange(val){
+        let that=this
+        that.addFrom.goodId=val.map(item=>{
+          return item.goodId
+        })
+      },  
       showAddDialog(){
             let that = this;
             that.addFormVisible = true;
@@ -59,7 +65,7 @@
       ImgClick(){
         this.$emit('ImgClick');
       },
-      submit(){
+      submit(rows){
         let that=this
         Api_adv.catBackGroundAdd(that.addFrom).then(function(res){
           if(res.code==0){
@@ -71,7 +77,6 @@
            that.addFormVisible = false;
            that.$emit('catBackGroundList');
          }
-          console.log(res);
         })
       }
     }
