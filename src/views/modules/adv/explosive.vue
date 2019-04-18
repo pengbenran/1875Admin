@@ -29,6 +29,7 @@
           <template slot-scope="scope">
             <el-button size="mini" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="removecatBackLevel(scope.$index,scope.row)">删除</el-button>
+            <el-button size="mini" type="primary" @click="showGoodConnectDialog(scope.row.id)">关联商品</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -36,6 +37,8 @@
       <explosiveAddDialog :addFrom='addFrom' ref="explosiveAddDialog" @ImgClick="ImgClick" @catBackGroundList="catBackGroundList"></explosiveAddDialog>
       <!-- 编辑模态框 -->
       <explosiveEditDialog :editFrom='editFrom' ref="explosiveEditDialog" @ImgClick="ImgClick" @catBackGroundList="catBackGroundList"></explosiveEditDialog>
+      <!-- 关联商品 -->
+      <explosiveGoodConnectDialog ref="explosiveGoodConnectDialog"></explosiveGoodConnectDialog>
       <!-- 图片裁剪 -->
       <uploadImg :proportion="proportion" :type="type" ref='UploadImg' @GetDataImg='GetDataImg'></uploadImg>
     </el-col>
@@ -47,7 +50,9 @@
   import uploadImg from '@/components/UpLoadImg/UpLoadImg'
   import explosiveAddDialog from './components/explosive/explosiveAddDialog'
   import explosiveEditDialog from './components/explosive/explosiveEditDialog'
+  import explosiveGoodConnectDialog from './components/thingsExplosiveConnectionDialog'
   import Api_adv from '@/api/adv'
+  import Api_goodList from '@/api/goods'
   export default {
     data () {
       return {
@@ -61,17 +66,18 @@
           sorts:''
         },
         showCropper:false,
-        proportion:2.8,
+        proportion:1.06,
         type:4,
         btnLoading:false,
-        formLabelWidth:'120px'
+        formLabelWidth:'120px',
+        catBackgroundId:''
       }
     },
     mounted () {
       let that=this
       that.catBackGroundList()
     },
-    components: { uploadImg,explosiveEditDialog,explosiveAddDialog},
+    components: { uploadImg,explosiveEditDialog,explosiveAddDialog,explosiveGoodConnectDialog},
     methods: {
           //编辑
           showEditDialog(index,row){
@@ -83,6 +89,12 @@
           showAddDialog(){
             let that = this;
             that.$refs.explosiveAddDialog.showAddDialog()
+          },
+            // 关联商品模态框
+           showGoodConnectDialog(catBackgroundId){
+            let that = this;
+            that.catBackgroundId=catBackgroundId
+            that.$refs.explosiveGoodConnectDialog.showGoodConnectDialog(that.catBackgroundId)
           },
           catBackGroundList(){
             let params={}
@@ -119,7 +131,6 @@
     }
   }
 </script>
-
 <style lang="scss">
  
 </style>

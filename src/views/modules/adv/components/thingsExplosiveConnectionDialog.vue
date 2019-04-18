@@ -27,36 +27,30 @@
   import Pagination from '@/components/Pagination'
   import Api_goodList from '@/api/goods'
 	export default {
-		props: ['type'],
     components: { Pagination},
 		data () {
 			return {
-        goodsConnectFormVisible:false,
-        formLabelWidth:'120px',
-        listQuery:{
-          page: 1,
-          limit: 10,
-        },
-        total:0,
-        goodsListData:[],
-        connectGood:[],
-        multipleSelection:[],
-        multipleSelectionAll:[],
-      }
+			 goodsConnectFormVisible:false,
+       formLabelWidth:'120px',
+       params:{
+        goodIds:'',
+        catBackgroundId:''
+       },
+       listQuery:{
+        page: 1,
+        limit: 10,
+       },
+       total:10,
+       goodsListData:[],
+       multipleSelection:[],
+       multipleSelectionAll:[],
+       connectGood:[],
+			}
 		},
     methods:{
-      // 获取已经人气关联的商品
-      bannerGoodlist(){
-        let that=this
-        let params={}
-        params.type=that.type
-        Api_adv.bannerGoodlist(params).then(function(res){
-          that.connectGood=res.goodIds
-        })
-      },
-      // 设置选中的方法
-      setSelectRow() {
-        let that=this
+          // 设置选中的方法
+          setSelectRow() {
+            let that=this
             // 标识当前行的唯一键的名称  
             let selectAllIds = [];
             that.multipleSelectionAll.forEach(row=>{
@@ -70,7 +64,7 @@
             }
           },
           GetGoodsList(){
-            let that=this
+            let that=this 
             that.changePageCoreRecordData()  
             Api_goodList.GoodsList(that.listQuery).then(function(res){
               that.goodsListData=res.rows
@@ -84,13 +78,22 @@
                     that.multipleSelectionAll.push(row)
                   }
                 })
-              })
-              setTimeout(()=>{
+            })
+            setTimeout(()=>{
                 that.setSelectRow()
-              },100)
+            },100)
             })
           }, 
-      async showGoodConnectDialog(catBackgroundId){
+          // 获取已经人气关联的商品
+          bannerGoodlist(){
+            let that=this
+            let params={}
+            params.catBackgroundId=that.catBackgroundId
+            Api_adv.catBackgroundGoodlist(params).then(function(res){
+              that.connectGood=res.goodIds
+            })
+          },
+         async showGoodConnectDialog(catBackgroundId){
           let that = this;
           that.goodsConnectFormVisible = true;
           that.catBackgroundId=catBackgroundId
@@ -99,11 +102,11 @@
           await that.bannerGoodlist()
           setTimeout(function(){
            that.setSelectRow()
-          },500)            
+          },500)       
       },
       handleSelectionChange(val){
-         let that=this
-         that.multipleSelection=val
+        let that=this
+        that.multipleSelection=val
       },
       submit(){
         let that=this
@@ -111,10 +114,9 @@
         let res=that.multipleSelectionAll.map(item=>{
           return item.goodId
         })
-        let params={}
-        params.goodIds=res.join(',')
-        params.type=that.type
-        Api_adv.batchSave(params).then(function(res){
+        that.params.goodIds=res.join(',')
+        that.params.catBackgroundId=that.catBackgroundId
+        Api_adv.catBackgroundBatchSave(that.params).then(function(res){
           that.$message.success({
               showClose: true,
               message: "关联成功",

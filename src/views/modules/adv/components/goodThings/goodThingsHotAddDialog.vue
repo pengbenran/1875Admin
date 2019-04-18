@@ -4,7 +4,7 @@
           <el-form-item label="分类名称" :label-width="formLabelWidth" prop="catName">
               <el-input v-model="addFrom.catName" auto-complete="off" placeholder="请输入分类名称"></el-input>
           </el-form-item>
-          <el-form-item label="字体颜色" :label-width="formLabelWidth" prop="fontColor">
+          <el-form-item label="分类主题颜色" :label-width="formLabelWidth" prop="fontColor">
             <div class="block">
               <el-color-picker v-model="addFrom.fontColor"></el-color-picker>
             </div>
@@ -21,19 +21,6 @@
           <el-form-item label="排序" :label-width="formLabelWidth" prop="catName">
               <el-input v-model="addFrom.sorts" auto-complete="off" placeholder="请输入排列顺序"></el-input>
           </el-form-item>
-           <el-form-item label="关联商品:" :label-width="formLabelWidth" prop="kindName">
-            <el-table ref="multipleTable":data="gridData" tooltip-effect="dark" style="width: 100%"
-            @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column label="商品名称" prop="goodName">
-            </el-table-column>
-            <el-table-column label="商品图片">
-              <template slot-scope="scope">
-               <img :src="scope.row.thumbnail" width="80">
-              </template>
-            </el-table-column>
-           </el-table>
-          </el-form-item>   
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button  @click.native="addFormVisible = false">取 消</el-button>
@@ -44,7 +31,7 @@
 <script type="text/javascript">
   import Api_adv from '@/api/adv'
 	export default {
-		props: ['addFrom','gridData'],
+		props: ['addFrom'],
 		data () {
 			return {
 				addFormVisible:false,
@@ -64,6 +51,12 @@
       },
       ImgClick(){
         this.$emit('ImgClick');
+      },
+      catBackgroundBatchSave(){
+
+      },
+      catBackGroundAdd(){
+
       },
       submit(rows){
         let that=this

@@ -7,7 +7,7 @@
 			<el-form-item label="排列顺序" :label-width="formLabelWidth" prop="kindName">
 				<el-input v-model="editFrom.sorts" auto-complete="off"></el-input>
 			</el-form-item>
-			<el-form-item label="字体颜色" :label-width="formLabelWidth" prop="kindNameColor">
+			<el-form-item label="分类主题颜色" :label-width="formLabelWidth" prop="kindNameColor">
 				<div class="block">
 					<el-color-picker v-model="editFrom.fontColor"></el-color-picker>
 				</div>
@@ -18,15 +18,6 @@
 				</el-col>
 				<el-alert title="注：首页banner比例为2.14 : 1，建议图片大小为300kb - 400kb" type="error" style="padding:0;margin-top: 5px;"></el-alert>
 			</el-form-item>	
-			<el-form-item label="关联商品:" :label-width="formLabelWidth" prop="kindName">
-				<el-table ref="multipleTable":data="editFrom.gridData" tooltip-effect="dark" style="width: 100%"
-				@selection-change="handleSelectionChange">
-				<el-table-column type="selection" width="55"></el-table-column>
-				<el-table-column label="商品名称" prop="name">
-				</el-table-column>
-				<el-table-column prop="address" label="商品图片"></el-table-column>
-			</el-table>
-		</el-form-item>  
 		</el-form>
 		<div slot="footer" class="dialog-footer">
 			<el-button @click.native="editFormVisible = false">取 消</el-button>

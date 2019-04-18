@@ -3,13 +3,13 @@
    <el-form ref="form" :model="setForm">
     <el-form-item label="今日爆品:" :label-width="formLabelWidth">
       <div class="avatar-uploaders" @click="ImgClick(1)">
-        <img v-if="setForm.favoriteFood" :src="setForm.favoriteFood" class="avatar">
+        <img v-if="setForm.explosive" :src="setForm.explosive" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon" ></i>
       </div>
     </el-form-item>
-     <el-form-item label="今日好物:" :label-width="formLabelWidth">
+     <el-form-item label="最新好物:" :label-width="formLabelWidth">
       <div class="avatar-uploaders1" @click="ImgClick(2)">
-        <img v-if="setForm.explosive" :src="setForm.explosive" class="avatar">
+        <img v-if="setForm.favoriteFood" :src="setForm.favoriteFood" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon1" ></i>
       </div>
     </el-form-item>
@@ -81,10 +81,10 @@
       GetDataImg(ImgUrl){
         let that=this
         if(that.index==1){
-          that.setForm.favoriteFood=ImgUrl
+          that.setForm.explosive=ImgUrl
         }
         else if(that.index==2){
-          that.setForm.explosive=ImgUrl
+          that.setForm.favoriteFood=ImgUrl
         }
         else{
           that.setForm.costEffective=ImgUrl

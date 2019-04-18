@@ -38,7 +38,7 @@
       <!-- 编辑界面 -->
       <goodThingsPersonEditDialog :editFrom='editFrom' ref="goodThingsPersonEditDialog" @ImgClick="ImgClick"  @getHomeBanner="getHomeBanner"></goodThingsPersonEditDialog>
       <!-- 关联商品 -->
-      <goodThingsPersonGoodConnectDialog :goodsListData='goodsListData' ref="goodThingsPersonGoodConnectDialog" :connectGood='connectGood'></goodThingsPersonGoodConnectDialog>
+      <goodThingsPersonGoodConnectDialog  ref="goodThingsPersonGoodConnectDialog" :type='type'></goodThingsPersonGoodConnectDialog>
      <!-- 图片裁剪 -->
    <uploadImg :proportion="proportion" :type="type" ref='UploadImg' @GetDataImg='GetDataImg'></uploadImg>
     </el-col>
@@ -50,9 +50,8 @@
   import uploadImg from '@/components/UpLoadImg/UpLoadImg'
   import goodThingsPersonAddDialog from './goodThings/goodThingsPersonAddDialog'
   import goodThingsPersonEditDialog from './goodThings/goodThingsPersonEditDialog'
-  import goodThingsPersonGoodConnectDialog from './goodThings/goodThingsPersonGoodConnectDialog'
+  import goodThingsPersonGoodConnectDialog from './thingsCostEffecticeConnectionDialog'
   import Api_adv from '@/api/adv'
-  import Api_goodList from '@/api/goods'
   export default {
     data () {
       return {
@@ -65,23 +64,16 @@
           status:1,
           sorts:''
         },
-        listQuery:{
-          page: 1,
-          limit: 10,
-        },
         showCropper:false,
-        proportion:2.8,
+        proportion:2.34,
         type:2,
         btnLoading:false,
-        goodsListData:[],
-        connectGood:[]
+        catBackgroundId:''
       }
     },
     mounted () {
       let that=this
       that.getHomeBanner()
-      that.getGoodList()
-      that.bannerGoodlist()
     },
     components: { uploadImg,goodThingsPersonAddDialog,goodThingsPersonEditDialog,goodThingsPersonGoodConnectDialog},
     methods: {
@@ -95,21 +87,6 @@
           that.bannerList=res.rows
         })
       },
-      // 获取已经人气关联的商品
-      bannerGoodlist(){
-        let that=this
-        let params={}
-        params.type=2
-        Api_adv.bannerGoodlist(params).then(function(res){
-          that.connectGood=res
-        })
-      },
-      getGoodList(){
-        let that=this
-        Api_goodList.GoodsList(that.listQuery).then(function(res){
-          that.goodsListData=res.rows  
-        })
-      }, 
       // 删除首页banner
       removeMemberLevel(index,row){
         let that=this
@@ -140,7 +117,6 @@
         let that = this;
         that.$refs.goodThingsPersonGoodConnectDialog.showGoodConnectDialog()
       },
-    
     //子组件裁剪方法成功执行后与父组件通信
      GetDataImg(ImgUrl){
         let that=this

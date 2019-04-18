@@ -21,15 +21,6 @@
           <el-form-item label="排序" :label-width="formLabelWidth" prop="catName">
               <el-input v-model="addFrom.sorts" auto-complete="off" placeholder="请输入排列顺序"></el-input>
           </el-form-item>
-           <el-form-item label="关联商品:" :label-width="formLabelWidth" prop="kindName">
-            <el-table ref="multipleTable":data="gridData" tooltip-effect="dark" style="width: 100%"
-            @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column label="商品名称" prop="name">
-            </el-table-column>
-            <el-table-column prop="address" label="商品图片"></el-table-column>
-           </el-table>
-          </el-form-item>   
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button>取 消</el-button>

@@ -23,19 +23,22 @@
         </el-table-column>
         <el-table-column prop="catName" label="分类名称">
         </el-table-column>
-        <el-table-column prop="fontColor" label="分类字体颜色">
+        <el-table-column prop="fontColor" label="分类主题颜色">
         </el-table-column>
         <el-table-column label="操作" :width="250">
           <template slot-scope="scope">
             <el-button size="mini" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="removecatBackLevel(scope.$index,scope.row)">删除</el-button>
+            <el-button size="mini" type="primary" @click="showGoodConnectDialog(scope.row.id)">关联商品</el-button>
           </template>
         </el-table-column>
       </el-table>
       <!-- 新增模态框 -->
-      <goodThingsHotAddDialog :addFrom='addFrom' ref="goodThingsHotAddDialog" @ImgClick="ImgClick" @catBackGroundList="catBackGroundList" :gridData='gridData'></goodThingsHotAddDialog>
+      <goodThingsHotAddDialog :addFrom='addFrom' ref="goodThingsHotAddDialog" @ImgClick="ImgClick" @catBackGroundList="catBackGroundList"></goodThingsHotAddDialog>
       <!-- 编辑模态框 -->
       <goodThingsHotEditDialog :editFrom='editFrom' ref="goodThingsHotEditDialog" @ImgClick="ImgClick" @catBackGroundList="catBackGroundList"></goodThingsHotEditDialog>
+      <!-- 关联商品模态框 -->
+      <goodThingsHotGoodConnectDialog  ref="goodThingsHotGoodConnectDialog"></goodThingsHotGoodConnectDialog>
       <!-- 图片裁剪 -->
       <uploadImg :proportion="proportion" :type="type" ref='UploadImg' @GetDataImg='GetDataImg'></uploadImg>
     </el-col>
@@ -46,8 +49,8 @@
 <script>
   import goodThingsHotAddDialog from './goodThings/goodThingsHotAddDialog'
   import goodThingsHotEditDialog from './goodThings/goodThingsHotEditDialog'
+  import goodThingsHotGoodConnectDialog from './thingsExplosiveConnectionDialog'
   import uploadImg from '@/components/UpLoadImg/UpLoadImg'
-  import Api_goodList from '@/api/goods'
   import Api_adv from '@/api/adv'
   export default {
     data () {
@@ -62,23 +65,19 @@
           sorts:''
         },
         showCropper:false,
-        proportion:2.8,
+        proportion:2.14,
         type:4,
         btnLoading:false,
         formLabelWidth:'120px',
-        listQuery:{
-          page: 1,
-          limit: 10,
-        },
-        gridData:[]
+        connectGood:[],
+        catBackgroundId:''
       }
     },
     mounted () {
       let that=this
       that.catBackGroundList()
-      that.getGoodList()
     },
-    components: {uploadImg,goodThingsHotAddDialog,goodThingsHotEditDialog},
+    components: {uploadImg,goodThingsHotAddDialog,goodThingsHotEditDialog,goodThingsHotGoodConnectDialog},
     methods: {
           //编辑
           showEditDialog(index,row){
@@ -86,17 +85,17 @@
             that.editFrom = row;
             that.$refs.goodThingsHotEditDialog.showEditDialog()
           },
+           // 关联商品模态框
+           showGoodConnectDialog(catBackgroundId){
+            let that = this;
+            that.catBackgroundId=catBackgroundId
+            that.$refs.goodThingsHotGoodConnectDialog.showGoodConnectDialog(that.catBackgroundId)
+          },
           // 新增
           showAddDialog(){
             let that = this;
             that.$refs.goodThingsHotAddDialog.showAddDialog()
           }, 
-          getGoodList(){
-            let that=this
-            Api_goodList.GoodsList(that.listQuery).then(function(res){
-              that.gridData=res.rows
-            })
-          },   
           catBackGroundList(){
             let params={}
             let that=this

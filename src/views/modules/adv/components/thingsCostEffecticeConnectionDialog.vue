@@ -90,10 +90,9 @@
               },100)
             })
           }, 
-      async showGoodConnectDialog(catBackgroundId){
+      async showGoodConnectDialog(){
           let that = this;
           that.goodsConnectFormVisible = true;
-          that.catBackgroundId=catBackgroundId
           that.multipleSelectionAll=[]
           await that.GetGoodsList()
           await that.bannerGoodlist()

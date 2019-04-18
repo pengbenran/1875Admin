@@ -48,5 +48,13 @@ export default {
 	// 获取今日爆品人气模块下已经关联的商品
 	bannerGoodlist:params=>{
 		return API.GET('/advertisement/bannerGood/bannerGoodlist',params)
-	}
+	},
+	// 最新好物跟今日爆品热卖模块关联商品
+	catBackgroundBatchSave:params=>{
+		return API.POST('/advertisement/catBackgroundGood/batchSave',params)
+	},
+	// 获取今日爆品人气模块下已经关联的商品
+	catBackgroundGoodlist:params=>{
+		return API.GET('/advertisement/catBackgroundGood/catBackgroundGoodlist',params)
+	},
 }
