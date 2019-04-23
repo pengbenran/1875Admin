@@ -89,6 +89,18 @@ export default {
    //批量删除分享师提现记录
    batchDeleteWithdrawApplyList:params => {
      return API.DELETE('/member/withdrawApply/batchRemove',params)
+   },
+
+
+   //查询推荐师的信息
+   DistributorConfigInfo:params => {
+     return API.GET('/config/globalConfig/getGlobalConfigEntity',params)
+   },
+   
+
+   //编辑推荐师设置信息
+   DistributorConfigUpdata:params => {
+     return API.PUT('/config/globalConfig/update',params)
    }
 
    

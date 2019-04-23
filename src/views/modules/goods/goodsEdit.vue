@@ -130,7 +130,7 @@
             <el-form-item label="分享获得佣金" :label-width="formLabelWidth"  prop="fixedCommission">
                 <div class="YongMoney" v-for="(item,index) in MemberDataList" :index ='index' :key="item.distributorLvId">
                     <el-tag style="margin-right:12px;">{{item.name}}</el-tag>
-                    <el-input :value="item.value" placeholder="请输入内容" autocomplete="off">
+                    <el-input v-model="item.value" placeholder="请输入内容" autocomplete="off">
                         <template slot="append">元</template>
                     </el-input>
                 </div>
@@ -314,7 +314,6 @@ export default {
                 let res = await API.GetGoodsCat(data).catch(err =>{});
                 if(res != undefined){
                         that.goodsCat = res.rows;
-                        console.log("分类进来211",that.goodsCat)
                         that.goodsCatRoot = that.goodsCat.filter(f => f.root == 1);
                         that.Get_GoodsCatData(Object.assign([],that.goodsCat));
                     }else{
@@ -357,7 +356,6 @@ export default {
                 }else{
                     that.$message.error('分享师等级列表并未请求到');
                 }
-            
         },
 
         //获取所有的店铺列表
@@ -441,6 +439,7 @@ export default {
             that.MemberDataList.map(Mres => {
                 MenberLv.push(Mres.distributorLvId+'|'+Mres.value);
             })
+            console.log("查看一下解析的数据",that.MemberDataList)
             that.AddData.fixedCommission = MenberLv.join(',')
         },
 
