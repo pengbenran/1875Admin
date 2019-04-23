@@ -6,5 +6,16 @@ export default {
 	},
 	pointLog:params=>{
 		return API.GET('/member/pointLog/list',params)
+	},
+
+	//分享师分润日志
+	GetDistributorMoney:params => {
+		return API.GET('/member/distributorLog/list',params)
+	},
+
+	
+	//分享师分润日志
+	GetDistributorBandDing:params => {
+		return API.GET('/member/distributorBoundLog/list',params)
 	}
 }
