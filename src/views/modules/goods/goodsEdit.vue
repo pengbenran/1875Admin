@@ -40,9 +40,8 @@
                 <el-radio v-model="AddData.hot" label="2">否</el-radio>
             </el-form-item>  
             <el-form-item label="商品状态" :label-width="formLabelWidth" prop="status">
-                <el-radio v-model="AddData.status" label="1">未上架</el-radio>
-                <el-radio v-model="AddData.status" label="2">已上架</el-radio>
-                <el-radio v-model="AddData.status" label="3">立即上架</el-radio>
+                <el-radio v-model="AddData.status" label="1">立即上架</el-radio>
+                <el-radio v-model="AddData.status" label="2">暂不上架</el-radio>
             </el-form-item>
             <el-form-item label="分类ID" :label-width="formLabelWidth"  prop="catId">
                 <el-input v-model="AddData.catId" placeholder="请输入分类ID" autocomplete="off"></el-input>
