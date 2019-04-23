@@ -6,5 +6,8 @@ export default {
 	},
 	pointLog:params=>{
 		return API.GET('/member/pointLog/list',params)
+	},
+	distribeUpLog:params=>{
+		return API.GET('/member/distributorLvUpLog/list',params)
 	}
 }
