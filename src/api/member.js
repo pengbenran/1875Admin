@@ -101,7 +101,25 @@ export default {
    //编辑推荐师设置信息
    DistributorConfigUpdata:params => {
      return API.PUT('/config/globalConfig/update',params)
-   }
+   },
 
-   
+   //推荐师审核列表recommenderReview
+   GetDistributorReview:params => {
+     return API.GET('/member/distributorApply/list',params)
+   },
+
+   //确认审核
+   QueDistributorReview:params => {
+    return API.PUT('/member/distributorApply/status',params)
+   },
+
+   //批量审核通过
+   BatchQueDistributorReviews:params => {
+    return API.DELETE('/member/distributorApply/batchPass',params)     
+   },
+
+   //批量审核不通过
+   BatchQueDistributorReview:params => {
+    return API.DELETE('/member/distributorApply/batchUnPass',params)     
+   }
 }

@@ -25,7 +25,7 @@
           <el-table-column align="center" prop="sort" label="排序" ></el-table-column>
           <el-table-column align="center" prop="status" label="商品状态" >
              <template slot-scope="scope">
-                 <el-tag type="success" v-if="scope.row.status == 1">未上架</el-tag> <el-tag type="success"  v-if="scope.row.status == 2">已上架</el-tag>
+                 <el-tag type="success" v-if="scope.row.status == 1">已上架</el-tag> <el-tag type="success"  v-if="scope.row.status == 2">未上架</el-tag>
                  <el-tag type="success" v-if="scope.row.status == 3">立即上架</el-tag>
              </template>
           </el-table-column>          

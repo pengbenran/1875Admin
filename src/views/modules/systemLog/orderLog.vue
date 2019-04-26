@@ -1,6 +1,5 @@
 <template>
   <div class="orderStatistics">
-
       <el-card class="box-card">
         <el-row :gutter="24">
             <el-col :span="14" >
