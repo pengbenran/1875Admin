@@ -22,6 +22,9 @@
           </el-table-column>
           <el-table-column prop="crateTime" label="添加时间"  align="center"></el-table-column>
           <el-table-column prop="region" label="地址"  align="center"></el-table-column>
+          <el-table-column prop="lvName" label="等级"  align="center"></el-table-column>
+          <el-table-column prop="consumePoint" label="消费积分"  align="center"></el-table-column>
+          <el-table-column prop="point" label="剩余积分"  align="center"></el-table-column>
           <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
              <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="handleInfo(scope.$index,scope.row)">详情</el-button>
