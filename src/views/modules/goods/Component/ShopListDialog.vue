@@ -380,14 +380,14 @@ export default {
             if(this.EditShow){
                 this.EdiData.address = MapData.address
                 this.EdiData.adCode = MapData.ad_info.adcode
-                this.EdiData.longitude = MapData.ad_info.location.lng
-                this.EdiData.latitude = MapData.ad_info.location.lat
+                this.EdiData.longitude = MapData.location.lng
+                this.EdiData.latitude = MapData.location.lat
             }
             if(this.AddShow){
                 this.AddData.address = MapData.address
                 this.AddData.adCode = MapData.ad_info.adcode
-                this.AddData.longitude = MapData.ad_info.location.lng
-                this.AddData.latitude = MapData.ad_info.location.lat
+                this.AddData.longitude = MapData.location.lng
+                this.AddData.latitude = MapData.location.lat
             }
 
         }
