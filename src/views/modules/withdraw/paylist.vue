@@ -36,7 +36,9 @@
           <el-table-column align="center" label="审核时间" prop="auditTime"/>
           <el-table-column align="center" label="操作" width="180" class-name="small-padding fixed-width">
               <template slot-scope="scope">
-              <el-button type="danger" size="mini" @click="deleteList(scope.$index,scope.row)">审核</el-button>
+              <el-button type="success" size="mini" @click="deleteList(scope.$index,scope.row)" :disabled='!(scope.row.status == 1)'>
+                  {{scope.row.status == 1 ? '审核':'无需审核'}} 
+              </el-button>
               </template>
           </el-table-column>
         </el-table>
@@ -85,30 +87,30 @@ import Pagination from '@/components/Pagination'
       },
 
       //删除
-      async deleteList(index,row){
+       deleteList(index,row){
         let that = this;
         let data;
-        let conRes = await that.$confirm('是否审核通过？','提示',{
+        this.$confirm('是否审核通过？','提示',{
+             distinguishCancelAndClose: true,
              confirmButtonText:'通过',
              cancelButtonText:' 不通过',
-             type:'warning'
-         }).catch(() => {
+         }).then(res => {
+            if(res == 'confirm'){
+                data = {withdrawId:row.withdrawId,status:2}
+                that.Que(data)
+            }
+         }).catch(action  => {
+             if(action == 'cancel'){
+                data = {withdrawId:row.withdrawId,status:3}
+                that.Que(data)
+             }
              that.$message({
                  type: 'info',
-                 message: '已取消删除'
+                 message: '取消审核'
              });
          });
-         if(conRes == 'confirm'){
-            data = {withdrawId:row.withdrawId,status:2}
-            console.log("查看数据",data,row)
-            that.Que(data)
-         }else{
-            data = {withdrawId:row.withdrawId,status:3}
-            console.log("查看数据",data)
-            that.Que(data)
-         }
-
       },
+
 
       async Que(data){
          let that = this;
@@ -129,13 +131,10 @@ import Pagination from '@/components/Pagination'
           that.listLoading = false;
       },
 
-
-
       //多选
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
-      handleFilter(){},
 
       async handleRemove(){
         let that = this;
