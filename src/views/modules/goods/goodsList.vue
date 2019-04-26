@@ -42,8 +42,9 @@
           </el-table-column>
           <el-table-column align="center" prop="showSales" label="展示销量" ></el-table-column>
           <el-table-column align="center" prop="sales" label="真实销量" ></el-table-column>
-          <el-table-column  align="center" label="操作" width="200" class-name="small-padding fixed-width">
+          <el-table-column  align="center" label="操作" width="220" class-name="small-padding fixed-width">
              <template slot-scope="scope">
+                <el-button type="success"  size="mini" icon="el-icon-plus" @click="handYi(scope.$index,scope.row)"></el-button>
                 <el-button type="primary" size="mini" @click="handlEdit(scope.$index,scope.row)">编辑</el-button>
                 <el-button type="danger" size="mini" @click="handleDelete(scope.$index,scope.row)">删除</el-button>
              </template>
@@ -53,16 +54,17 @@
       </el-col>
     </el-row>
 
-
+   <GoodDialog ref="GoodDialog"/>
   </div>
 </template>
 
 <script>
 import API from '@/api/goods'
 import Pagination from '@/components/Pagination'
+import GoodDialog from './Component/GoodDialog'
 
   export default {
-    components: { Pagination},
+    components: { Pagination,GoodDialog},
     data () {
       return {
         loading:false,
@@ -150,6 +152,12 @@ import Pagination from '@/components/Pagination'
       AddGoods(){
         let that = this;
         this.$router.push('/goods-goodsCreate')
+      },
+
+      //转入一分钱抢
+      handYi(index,row){
+        let that = this;
+        this.$refs.GoodDialog.DiaLogShow(true,row)
       },
       
       //编辑数据 index下标、row指定当前条数据

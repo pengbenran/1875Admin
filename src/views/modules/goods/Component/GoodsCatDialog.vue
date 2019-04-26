@@ -266,7 +266,6 @@ export default {
            
             if(this.IMAGE_iNDEX == 1){
                 this.AddData.img = ImgUrl;
-                 console.log("分类的数据1231",ImgUrl,this.AddData.img)
             }else{
                 this.EdiData.img = ImgUrl;
             }

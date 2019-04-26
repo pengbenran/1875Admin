@@ -98,5 +98,25 @@ export default {
     //根据ID进行删除
     DeleteShopMenber:params => {
         return API.DELETE('/good/shop/member',params)
-    }
+    },
+
+    //转入一分钱抢
+    AddyiMoneyShop:params => {
+        return API.POST('/penny/pennyBuy/save',params)
+    },
+
+    //获取一分钱抢的列表
+    YiMoneyShopList:params => {
+        return API.GET('/penny/pennyBuy/list',params)
+    },  
+
+    //获取一分钱抢的列表
+    DeleteYiMoneyShopList:params => {
+        return API.DELETE('/penny/pennyBuy/remove',params)
+    },  
+
+    //获取一分钱抢的列表
+    UpdateYiMoneyShopList:params => {
+        return API.PUT('/penny/pennyBuy/update',params)
+    },  
 }

@@ -49,7 +49,6 @@ import axios from 'axios'
             },
 
             showPosition(position) {
-                console.log("查看当前的额位置",)
                 this.latitude = position.lat;
                 this.longitude = position.lng;
                 this.city = position.city;
@@ -110,7 +109,6 @@ import axios from 'axios'
                 let that = this;
                 let addressMap;
                 val == undefined  ? addressMap = this.inputS : addressMap = val
-                console.log("参数：",val,addressMap)
                 let url = `https://apis.map.qq.com/ws/geocoder/v1/`;
                 this.$jsonp(url,{
                     key:'5AGBZ-6ZLCX-G734A-ZZDIF-VNDFQ-GHFY2',
@@ -145,7 +143,7 @@ import axios from 'axios'
                     callbackName: 'QQmap',
                 }).then(jsonp => {
                     if(jsonp.status == 0){
-                        // console.log("根据经纬度拿到详细信息",jsonp.result)
+                        console.log("根据经纬度拿到详细信息",jsonp.result)
                         that.MapData = jsonp.result
                     }else{
                         that.$message.error('经纬度地址请求失败');

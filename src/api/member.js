@@ -121,5 +121,15 @@ export default {
    //批量审核不通过
    BatchQueDistributorReview:params => {
     return API.DELETE('/member/distributorApply/batchUnPass',params)     
+   },
+
+   // 获取会员银行卡列表
+   getBankList:params=>{
+    return API.GET('/member/withdrawInfo/list',params)
+   },
+
+   // 删除会员银行卡信息
+   removeBankCard:params=>{
+    return API.DELETE('/member/withdrawInfo/remove',params)
    }
 }

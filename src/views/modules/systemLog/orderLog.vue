@@ -49,6 +49,7 @@ import Pagination from '@/components/Pagination'
     data () {
       return {
         List:[],
+        listLoading:false,
         listQuery: {
           page: 1,
           limit: 10,
@@ -79,7 +80,7 @@ import Pagination from '@/components/Pagination'
       },
 
       //删除
-      async deleteList(){
+      async deleteList(index,row){
         let that = this;
         //  let res = await 
         let conRes = await that.$confirm('是否确定删除？','提示',{
