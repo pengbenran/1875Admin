@@ -7,22 +7,27 @@
       </el-col>
       <el-col :span="24" v-loading="loading"  element-loading-text="正在查询中。。。" >
         <el-table ref="multipleTable" :data="menberLvList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="name" label="等级名称" width="120"></el-table-column>
-          <el-table-column prop="defaultLv" label="是否为默认等级" width="120">
+          <el-table-column  align="center"  type="selection" width="55"></el-table-column>
+          <el-table-column  align="center"  prop="name" label="等级名称" width="120"></el-table-column>
+          <el-table-column  align="center"  prop="defaultLv" label="是否为默认等级" width="120">
             <template slot-scope="scope">
                 <el-tag :type="scope.row.defaultLv == 1 ? 'success' : 'error' ">{{ scope.row.defaultLv == 1 ? '是' : '否' }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="discount" label="折扣大小" ></el-table-column>
-          <el-table-column prop="rank" label="等级大小" ></el-table-column>
-          <el-table-column prop="type" label="升级方式" >
+          <el-table-column  align="center"  prop="discount" label="折扣大小" ></el-table-column>
+          <el-table-column  align="center"  prop="rank" label="等级大小" ></el-table-column>
+          <el-table-column  align="center"  prop="type" label="升级方式" >
             <template slot-scope="scope">
                 <el-tag :type="scope.row.type == 1 ? 'success' : 'error' ">{{ scope.row.type == 1 ? '消费金额' : '购物数量' }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="upgradePoint" label="达到等级所需积分" ></el-table-column>
-          <el-table-column prop="givePoint" label="达到等级赠送积分" ></el-table-column>
+          <el-table-column  align="center"  prop="upgradePoint" label="达到等级所需积分" ></el-table-column>
+          <el-table-column  align="center"  prop="givePoint" label="达到等级赠送积分" ></el-table-column>
+          <el-table-column  align="center"  prop="givePoint" label="图片">
+             <template slot-scope="scope">
+                <img :src="scope.row.memberImage" width="60"/>
+             </template>
+          </el-table-column>
           <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
              <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="handlEdit(scope.$index,scope.row)">编辑</el-button>

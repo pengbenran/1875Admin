@@ -17,6 +17,11 @@
           </el-table-column>
           <el-table-column align="center" prop="inviteNumber" label="升级所需人数" ></el-table-column>
           <el-table-column align="center" prop="description" label="推荐师权益" ></el-table-column>
+          <el-table-column align="center" prop="distributorImage" label="图片" >
+             <template slot-scope="scope">
+                <img :src="scope.row.distributorImage" />
+             </template>
+          </el-table-column>
           <el-table-column  align="center" label="操作" width="200" class-name="small-padding fixed-width">
              <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="handlEdit(scope.$index,scope.row)">编辑</el-button>

@@ -96,7 +96,7 @@ import Pagination from '@/components/Pagination'
              });
          });
          if(conRes == 'confirm'){
-            data = {applyId:row.applyId,status:2}
+            data = {applyId:row.applyId,status:1}
             that.Que(data)
          }else{
             data = {applyId:row.applyId,status:3}
