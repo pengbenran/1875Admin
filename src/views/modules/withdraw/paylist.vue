@@ -2,36 +2,41 @@
   <div class="orderStatistics">
       <el-card class="box-card">
         <el-row :gutter="24">
-            <el-col :span="14" >
+            <el-col :span="8" >
                 <div class="filter-container">
-                    <el-input v-model="listQuery.searchName" clearable class="filter-item" style="width: 300px;" placeholder="订单编号/商品名称/订单用户/店铺搜索"/>
+                    <el-input v-model="listQuery.searchParam" clearable class="filter-item" style="width: 300px;" placeholder="会员编号/会员名称"/>
                 </div>
             </el-col>
-            <el-col :span="10"> 
+            <el-col :span="11"> 
                 <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
                 <!-- <el-button class="filter-item" type="success" icon="el-icon-download">导出</el-button> -->
                 <!-- <el-button class="filter-item" type="danger" icon="el-icon-delete" @click="handleRemove" :disabled='multipleSelection.length == 0'>批量审核</el-button> -->
             </el-col>
+            <el-col :span="5">
+                <div class="select">
+                        <el-select v-model="Statuvalue" placeholder="请选择提现状态" @change='GetStatuOrder'>
+                            <el-option v-for="item in Statuoptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                    </div>
+            </el-col>  
         </el-row>      
       </el-card>
 
       <el-card class="box-card">
         <el-table v-loading="listLoading" :data="List" @selection-change="handleSelectionChange" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column align="center" label="分享师Id" prop="distributorId"/>
           <el-table-column align="center" label="会员Id" prop="memberId"/>
           <el-table-column align="center" label="名称" prop="name"/>
           <el-table-column align="center" label="状态" prop="status">
               <template slot-scope="scope">
-                  <el-tag type="success" v-if="scope.row.status == 1">未审核</el-tag>
+                  <el-tag type="info" v-if="scope.row.status == 1">未审核</el-tag>
                   <el-tag type="success" v-if="scope.row.status == 2">已通过</el-tag>
-                  <el-tag type="success" v-if="scope.row.status == 3">未通过</el-tag>
-                  <el-tag type="success" v-if="scope.row.status == 4">已取消</el-tag>
+                  <el-tag type="danger" v-if="scope.row.status == 3">未通过</el-tag>
               </template>
           </el-table-column>
           <el-table-column align="center" label="电话" prop="mobile"/>
-          <el-table-column align="center" label="审核人" prop="username"/>
-          <!-- <el-table-column align="center" label="推荐人Id" prop="tjunionid"/> -->
+          <el-table-column align="center" label="到账卡号" prop="cardno"/>
+          <el-table-column align="center" label="到账银行" prop="depositBank"/>
           <el-table-column align="center" label="申请时间" prop="applyTime"/>
           <el-table-column align="center" label="审核时间" prop="auditTime"/>
           <el-table-column align="center" label="操作" width="180" class-name="small-padding fixed-width">
@@ -49,7 +54,6 @@
 <script>
 import API from '@/api/member'
 import API_g from '@/api/pay'
-
 import Pagination from '@/components/Pagination' 
   export default {
     components:{Pagination},
@@ -63,6 +67,17 @@ import Pagination from '@/components/Pagination'
         },
         total:8,
         multipleSelection:[],
+        Statuoptions:[{
+          value: 0,
+          label: '待审核'
+        },{
+          value: 1,
+          label: '审核通过'
+        }, {
+          value: 2,
+          label: '审核不通过'
+        }],
+        Statuvalue:''
       }
     },
     mounted () {
@@ -85,7 +100,14 @@ import Pagination from '@/components/Pagination'
             that.$message.error('抱歉，获取列表失败')   
         })
       },
-
+        //根据审核状态筛选
+        async GetStatuOrder(){
+          let that = this;    
+          // that.listQuery.page = 1;
+          // that.listQuery.limit = 10;
+          // let data = Object.assign({},that.listQuery,{status:that.Statuvalue})
+          // that.GetData(data)
+        },
       //删除
        deleteList(index,row){
         let that = this;
@@ -135,7 +157,9 @@ import Pagination from '@/components/Pagination'
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
+      handleFilter(){
 
+      },
       async handleRemove(){
         let that = this;
         //  let res = await 

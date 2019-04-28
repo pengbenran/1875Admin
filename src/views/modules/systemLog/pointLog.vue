@@ -1,5 +1,5 @@
 <template>
-  <div class="memberUpLog">
+  <div class="pointLog">
     <el-row :gutter="24">
        <el-col :span="24">
           <el-input v-model="listQuery.searchParam" style="width:180px;" placeholder="请输入会员名称搜索"></el-input> <el-button type="success" @click="searchGetMenberData" icon="el-icon-search">搜索</el-button>
