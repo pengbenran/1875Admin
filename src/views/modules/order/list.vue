@@ -9,19 +9,12 @@
                 </el-col>
                 <el-col :span="10"> 
                     <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-                    <el-button class="filter-item" type="success" icon="el-icon-download">导出</el-button>
+                    <!-- <el-button class="filter-item" type="success" icon="el-icon-download">导出</el-button> -->
                     <el-button class="filter-item" type="danger" icon="el-icon-delete" @click="handleRemove" :disabled='multipleSelection.length == 0'>删除</el-button>
                 </el-col>
             </el-row>  
             <el-row :gutter="24">          
-                <el-col :span="5" >
-                    <div class="select">
-                        <el-select v-model="Statuvalue" placeholder="请选择店铺名称" @change='GetStatuOrder'>
-                            <el-option v-for="item in Statuoptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                        </el-select>
-                    </div>
-                </el-col>
-                <el-col :span="5" >
+                <el-col :span="10" >
                     <div class="select">
                         <el-select v-model="Statuvalue" placeholder="请选择订单状态" @change='GetStatuOrder'>
                             <el-option v-for="item in Statuoptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -30,15 +23,8 @@
                 </el-col>
                 <el-col :span="10" :offset="4">
                    <div class="block">
-                    <el-date-picker
-                        v-model="value7"
-                        type="daterange"
-                        align="right"
-                        unlink-panels
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        :picker-options="pickerOptions2">
+                    <el-date-picker  v-model="value7" type="daterange" align="right" @change="handleChange" value-format='timestamp'
+                     unlink-panels  range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions2">
                     </el-date-picker>
                     </div>
                 </el-col>
@@ -144,7 +130,7 @@ export default {
         value7: '',
         Statuvalue:'',
         searchName:'',
-        total: 5,
+        total: 10,
         listQuery: {
             page: 1,
             limit: 10,
@@ -157,13 +143,14 @@ export default {
     }
   },
   created() {
-      this.getOrderList();
+      this.getOrderList(this.listQuery);
   },
   methods: {
-   async getOrderList(){
+   async getOrderList(data){
          let that = this;
          that.listLoading = true;
-         API.GetOrderList(that.listQuery).then(res => {
+         data == undefined ? data = this.listQuery : data = data
+         API.GetOrderList(data).then(res => {
             if(res != undefined){
                 console.log("你好查看所有的数据")
                 that.List = res.rows;
@@ -195,7 +182,7 @@ export default {
                  that.$message.error('抱歉，删除失败')
              })
              if(res.code == 0){
-                 that.getOrderList();
+                 that.getOrderList(this.listQuery);
                  that.$message({
                      message:'删除成功',
                      type:'success'
@@ -208,11 +195,9 @@ export default {
     },
 
 
-
-
     async handleFilter(){
         let that = this;  
-        that.getOrderList()
+        that.getOrderList(this.listQuery)
     },
     
     //根据订单状态选
@@ -221,24 +206,17 @@ export default {
         that.listQuery.page = 1;
         that.listQuery.limit = 10;
         let data = Object.assign({},that.listQuery,{status:that.Statuvalue})
-        that.GetData(data)
+        that.getOrderList(data)
     },
 
-    async GetData(data){
+    //时间选择
+    handleChange(val){
         let that = this;
-        that.listLoading = true;
-        let res = await API_ord.get_OrderList(data).catch(err => {
-           this.$message.error('抱歉，订单列表未请求到')
-        })
-        if(res != undefined){
-            that.List = res.rows.map(v => {
-            v.createTime = Lib.dade_Time(v.createTime)
-            return v;
-        });
-        that.total = res.total;
-        }
-        that.listLoading = false;
+        let data = Object.assign({},that.listQuery,{beginTime:val[0],endTime:val[1]})
+        that.getOrderList(data)
+        // console.log("asjdlasjd",val)
     },
+
 
     //多选
     handleSelectionChange(val) {
@@ -270,7 +248,7 @@ export default {
                 this.$message.error("抱歉,删除失败")
             })
             if(res.code == 0){
-                this.getOrderList();
+                this.getOrderList(this.listQuery);
                 that.$message({
                     message:'删除成功',
                     type:'success'

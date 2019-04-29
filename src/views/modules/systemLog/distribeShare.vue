@@ -3,41 +3,38 @@
 
       <el-card class="box-card">
         <el-row :gutter="24">
-            <el-col :span="8" >
+            <el-col :span="7" >
                 <div class="filter-container">
-                    <el-input v-model="listQuery.searchName" clearable class="filter-item" style="width: 300px;" placeholder="订单编号/消费者姓名/分润获得者微信名"/>
+                    <el-input v-model="listQuery.searchParam" clearable class="filter-item" style="width: 300px;" placeholder="订单编号/消费者姓名/微信名"/>
                 </div>
             </el-col>
-            <el-col :span="6"> 
+            <el-col :span="8"> 
                 <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+                <!-- <el-button class="filter-item" type="success" icon="el-icon-download">导出</el-button> -->
+                <!-- <el-button class="filter-item" type="danger" icon="el-icon-delete" @click="handleRemove" :disabled='multipleSelection.length == 0'>删除</el-button> -->
             </el-col>
-             <el-col :span="10">
-                   <div class="block">
-                    <el-date-picker
-                        v-model="value7"
-                        type="daterange"
-                        align="right"
-                        unlink-panels
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        :picker-options="pickerOptions2">
-                    </el-date-picker>
-                    </div>
-                </el-col>
-        </el-row>      
+            <el-col :span="9">
+                <div class="block">
+                <el-date-picker  v-model="value7" type="daterange" align="right" @change="handleChange" value-format='yyyy-MM-dd'
+                    unlink-panels  range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions2">
+                </el-date-picker>
+                </div>
+            </el-col>
+        </el-row>   
+          
+
       </el-card>
 
       <el-card class="box-card">
         <el-table v-loading="listLoading" :data="List" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
           <el-table-column align="center" label="分润日志Id" prop="distributorLogId"/>
           <el-table-column align="center" label="订单编号" prop="orderSn"/>
-          <el-table-column align="center" label="消费者姓名" prop="froms"/>
-          <el-table-column prop="face" label="消费者头像"  align="center">
-            <template slot-scope="scope">
-             <img :src="scope.row.face" :alt="scope.row.name" width="80">
-           </template>
-         </el-table-column>
+          <el-table-column align="center" label="购买人头像" prop="face">
+              <template slot-scope="scope">
+                   <img :src="scope.row.face" width="55"/>
+              </template>
+          </el-table-column>
+          <el-table-column align="center" label="购买人" prop="froms"/>
           <el-table-column align="center" label="分润获得者微信名" prop="tos"/>
           <el-table-column align="center" label="类型" prop="type">
               <template slot-scope="scope">
@@ -54,7 +51,9 @@
           </el-table-column> -->
         </el-table>
       </el-card>
+
         <Pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="GetOrderLogList" />
+
   </div>
 </template>
 <script>
@@ -64,12 +63,14 @@ import Pagination from '@/components/Pagination'
     components:{Pagination},
     data () {
       return {
+        listLoading:false,
         List:[],
         listQuery: {
           page: 1,
           limit: 10,
         },
         total:8,
+        multipleSelection:[],
         listLoading:false,
         value7:'',
         pickerOptions2: {
@@ -154,7 +155,26 @@ import Pagination from '@/components/Pagination'
             that.listLoading = false;
          }
       },
-      handleFilter(){},
+
+
+      //按时间查找
+      handleChange(val){
+         console.log(val,"选择时间")
+         let that = this;
+         that.listQuery.beginTime = val[0];
+         that.listQuery.endTime = val[1];
+         that.GetOrderLogList();
+      },
+
+      //多选
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
+      handleFilter(){
+        this.GetOrderLogList();       
+      },
+
+
       async handleRemove(){
         let that = this;
         //  let res = await 
@@ -179,7 +199,7 @@ import Pagination from '@/components/Pagination'
                 this.$message.error("抱歉,删除失败")
             })
             if(res.code == 0){
-                this.getOrderList();
+                this.GetOrderLogList();
                 that.$message({
                     message:'删除成功',
                     type:'success'

@@ -1,32 +1,27 @@
 <template>
   <div class="orderStatistics">
 
-     <el-card class="box-card">
+
+      <el-card class="box-card">
         <el-row :gutter="24">
-            <el-col :span="8" >
+            <el-col :span="7" >
                 <div class="filter-container">
-                    <el-input v-model="listQuery.searchName" clearable class="filter-item" style="width: 300px;" placeholder="绑定Id/微信名"/>
+                    <el-input v-model="listQuery.searchParam" clearable class="filter-item" style="width: 300px;" placeholder="会员名称/分享师名称"/>
                 </div>
             </el-col>
-            <el-col :span="6"> 
+            <el-col :span="8"> 
                 <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
             </el-col>
-             <el-col :span="10">
-                   <div class="block">
-                    <el-date-picker
-                        v-model="value7"
-                        type="daterange"
-                        align="right"
-                        unlink-panels
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        :picker-options="pickerOptions2">
-                    </el-date-picker>
-                    </div>
-                </el-col>
+            <el-col :span="9">
+                <div class="block">
+                <el-date-picker  v-model="value7" type="daterange" align="right" @change="handleChange" value-format='yyyy-MM-dd'
+                    unlink-panels  range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions2">
+                </el-date-picker>
+                </div>
+            </el-col>
         </el-row>      
       </el-card>
+
       <el-card class="box-card">
         <el-table v-loading="listLoading" :data="List" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
           <el-table-column align="center" label="绑定日志Id" prop="boundId"/>
@@ -62,6 +57,7 @@ import Pagination from '@/components/Pagination'
           limit: 10,
         },
         total:8,
+        multipleSelection:[],
         value7:'',
         listLoading:false,
         pickerOptions2: {
@@ -146,11 +142,21 @@ import Pagination from '@/components/Pagination'
          }
       },
 
+      //根据时间筛选
+      handleChange(val){
+          let that = this;
+         that.listQuery.beginTime = val[0];
+         that.listQuery.endTime = val[1];
+         this.GetOrderLogList();
+      },
+
       //多选
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
-      handleFilter(){},
+      handleFilter(){
+        this.GetOrderLogList(); 
+      },
       async handleRemove(){
         let that = this;
         //  let res = await 
