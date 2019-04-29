@@ -2,15 +2,22 @@
   <div class="pointLog">
         <el-card class="box-card">
         <el-row :gutter="24">
-            <el-col :span="8" >
+            <el-col :span="5" >
                 <div class="filter-container">
-                    <el-input v-model="listQuery.searchName" clearable class="filter-item" style="width: 300px;" placeholder="订单编号/消费者姓名/分润获得者微信名"/>
+                    <el-input v-model="listQuery.searchParam" clearable class="filter-item" style="width: 200px;" placeholder="订单编号/会员名称"/>
                 </div>
             </el-col>
-            <el-col :span="6"> 
+            <el-col :span="3"> 
                 <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
             </el-col>
-             <el-col :span="10">
+            <el-col :span="6" :offset="1">
+              <div class="select">
+                <el-select v-model="listQuery.type" placeholder="请选择积分类型" @change='handleFilter'>
+                  <el-option v-for="item in Statuoptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </div>
+            </el-col>
+             <el-col :span="6">
                    <div class="block">
                     <el-date-picker
                         v-model="value7"
@@ -20,14 +27,17 @@
                         range-separator="至"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
-                        :picker-options="pickerOptions2">
+                        :picker-options="pickerOptions2" 
+                        @blur="handleFilter"
+                        format="yyyy 年 MM 月 dd 日 HH 时 mm分 ss秒"
+                        value-format="yyyy-MM-dd HH:mm:ss">
                     </el-date-picker>
                     </div>
                 </el-col>
         </el-row>      
       </el-card>
    <el-card class="box-card">
-       <el-table v-loading="listLoading" :data="pointLogList" @selection-change="handleSelectionChange" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+       <el-table v-loading="listLoading" :data="pointLogList" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
          <!-- <el-table-column type="selection" width="55"></el-table-column>
            <el-table-column prop="face" label="头像"  align="center">
             <template slot-scope="scope">
@@ -64,14 +74,28 @@ import Pagination from '@/components/Pagination'
     components:{Pagination},
     data () {
       return {
-        loading:false,
+        listLoading:false,
         pointLogList:[],
         listQuery:{
           page: 1,
           limit: 10,
+          searchParam:'',
+          beginTime:'',
+          endTime:'',
+          type:''
         },
         total:10,
         value7:'',
+        Statuoptions:[{
+          value: 1,
+          label: '购买获得积分'
+        },{
+          value: 2,
+          label: '分享获得积分'
+        }, {
+          value: 3,
+          label: '购买消费积分'
+        }],
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -109,7 +133,6 @@ import Pagination from '@/components/Pagination'
       GetpointLog(){
         let that = this;
         API.pointLog(Object.assign({},that.listQuery)).then(res => {
-          console.log("成功的打印",res)
           if(res != undefined){
             that.pointLogList = res.rows;
             that.total = res.total;
@@ -121,7 +144,14 @@ import Pagination from '@/components/Pagination'
       searchGetMenberData(){
         let that = this;
         that.GetpointLog()
-      }
+      },
+      handleFilter(){
+        let that=this
+        that.page=1
+        that.listQuery.beginTime=that.value7[0]
+        that.listQuery.endTime=that.value7[1]
+        that.GetpointLog()
+      },
     }
   }
 </script>

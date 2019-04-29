@@ -1,11 +1,36 @@
 <template>
   <div class="memberUpLog">
+   <el-card class="box-card">
     <el-row :gutter="24">
-       <el-col :span="24">
-          <el-input v-model="listQuery.searchParam" style="width:180px;" placeholder="请输入会员名称搜索"></el-input> <el-button type="success" @click="searchGetMenberData" icon="el-icon-search">搜索</el-button>
-       </el-col>
-       <el-col :span="24"  v-loading="loading"  element-loading-text="正在查询中。。。" >
-         <el-table ref="multipleTable" :data="distribeUpLogList" tooltip-effect="dark" style="width: 100%">
+      <el-col :span="8" >
+        <div class="filter-container">
+          <el-input v-model="listQuery.searchParam" clearable class="filter-item" style="width: 300px;" placeholder="分享师名称/分享师等级"/>
+        </div>
+      </el-col>
+      <el-col :span="6"> 
+        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      </el-col>
+      <el-col :span="10">
+       <div class="block">
+        <el-date-picker
+        v-model="value7"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions2"
+        @blur="handleFilter"
+        format="yyyy 年 MM 月 dd 日 HH 时 mm分 ss秒"
+        value-format="yyyy-MM-dd HH:mm:ss">
+      </el-date-picker>
+    </div>
+  </el-col>
+</el-row>      
+</el-card>
+ <el-card class="box-card">
+       <el-table v-loading="listLoading" :data="distribeUpLogList" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
          <!-- <el-table-column type="selection" width="55"></el-table-column>
            <el-table-column prop="face" label="头像"  align="center">
             <template slot-scope="scope">
@@ -20,9 +45,8 @@
           <el-table-column prop="oldName" label="原等级名称"  align="center"></el-table-column>
           <el-table-column prop="addTime" label="升级时间"  align="center"></el-table-column>
         </el-table>
+      </el-card>
         <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="GetdistribeUpLogList" />
-       </el-col>
-    </el-row>
 
   </div>
 </template>
@@ -34,14 +58,51 @@ import Pagination from '@/components/Pagination'
     components:{Pagination},
     data () {
       return {
-        loading:false,
+        listLoading:false,
         distribeUpLogList:[],
         listQuery:{
           page: 1,
           limit: 10,
         },
         total:10,
-        multipleSelection:[],
+        value7:'',
+        Statuoptions:[{
+          value: 1,
+          label: '购买获得积分'
+        },{
+          value: 2,
+          label: '分享获得积分'
+        }, {
+          value: 3,
+          label: '购买消费积分'
+        }],
+        pickerOptions2: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        }
       }
     },
     mounted () {
@@ -64,7 +125,14 @@ import Pagination from '@/components/Pagination'
       searchGetMenberData(){
         let that = this;
         that.GetdistribeUpLogList();
-      }
+      },
+      handleFilter(){
+        let that=this
+        that.page=1
+        that.listQuery.beginTime=that.value7[0]
+        that.listQuery.endTime=that.value7[1]
+        that.GetdistribeUpLogList()
+      },
     }
   }
 </script>
