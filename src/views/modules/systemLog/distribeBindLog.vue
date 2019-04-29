@@ -1,6 +1,7 @@
 <template>
   <div class="orderStatistics">
 
+
       <el-card class="box-card">
         <el-row :gutter="24">
             <el-col :span="7" >
@@ -22,27 +23,25 @@
       </el-card>
 
       <el-card class="box-card">
-        <el-table v-loading="listLoading" :data="List" @selection-change="handleSelectionChange" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-          <el-table-column type="selection" width="55"></el-table-column>
+        <el-table v-loading="listLoading" :data="List" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
           <el-table-column align="center" label="绑定日志Id" prop="boundId"/>
-          <el-table-column align="center" label="分享师Id" prop="upMemberId"/>
-          <el-table-column align="center" label="添加时间" prop="addTime"/>
+          <el-table-column prop="face" label="头像"  align="center">
+            <template slot-scope="scope">
+                 <img :src="scope.row.face" :alt="scope.row.name" width="80">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="会员名称" prop="name"/>
+           <el-table-column align="center" label="分享师微信名" prop="upName"/>
           <el-table-column align="center" label="类型" prop="type">
               <template slot-scope="scope">
                   <el-tag type="success" v-if="scope.row.type == 1">商品二维码</el-tag>
                   <el-tag type="success" v-if="scope.row.type == 2">分享师二维码</el-tag>
               </template>
           </el-table-column>
-          <el-table-column align="center" label="下线数量" prop="lowNumber"/>
-          <el-table-column align="center" label="下级会员ID" prop="memberId"/>
-          <!-- <el-table-column align="center" label="操作" width="180" class-name="small-padding fixed-width">
-              <template slot-scope="scope">
-              <el-button type="danger" size="mini" @click="deleteList(scope.$index,scope.row)">删除</el-button>
-              </template>
-          </el-table-column> -->
+          <el-table-column align="center" label="绑定时间" prop="addTime"/>
         </el-table>
       </el-card>
-        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getOrderList" />
+        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="GetOrderLogList" />
   </div>
 </template>
 <script>
@@ -60,6 +59,7 @@ import Pagination from '@/components/Pagination'
         total:8,
         multipleSelection:[],
         value7:'',
+        listLoading:false,
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -97,7 +97,6 @@ import Pagination from '@/components/Pagination'
         let that = this;
         that.listLoading = true;
         API.GetDistributorBandDing(this.listQuery).then(res => {
-          console.log("查看所有的数据",res)
           if(res != undefined){
             that.List = res.rows;
             that.total = res.total;

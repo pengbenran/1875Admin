@@ -22,14 +22,12 @@
             </el-col>
         </el-row>   
           
+
       </el-card>
 
       <el-card class="box-card">
-        <el-table v-loading="listLoading" :data="List" @selection-change="handleSelectionChange" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-          <el-table-column type="selection" width="55"></el-table-column>
+        <el-table v-loading="listLoading" :data="List" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
           <el-table-column align="center" label="分润日志Id" prop="distributorLogId"/>
-          <el-table-column align="center" label="分享师Id" prop="distributorId"/>
-          <el-table-column align="center" label="用户Id" prop="memberId"/>
           <el-table-column align="center" label="订单编号" prop="orderSn"/>
           <el-table-column align="center" label="购买人头像" prop="face">
               <template slot-scope="scope">
@@ -37,8 +35,7 @@
               </template>
           </el-table-column>
           <el-table-column align="center" label="购买人" prop="froms"/>
-          <el-table-column align="center" label="获利人" prop="tos"/>
-
+          <el-table-column align="center" label="分润获得者微信名" prop="tos"/>
           <el-table-column align="center" label="类型" prop="type">
               <template slot-scope="scope">
                   <el-tag type="success" v-if="scope.row.type == 1">分享师佣金</el-tag>
@@ -54,7 +51,9 @@
           </el-table-column> -->
         </el-table>
       </el-card>
-        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="GetOrderLogList" />
+
+        <Pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="GetOrderLogList" />
+
   </div>
 </template>
 <script>
@@ -72,6 +71,7 @@ import Pagination from '@/components/Pagination'
         },
         total:8,
         multipleSelection:[],
+        listLoading:false,
         value7:'',
         pickerOptions2: {
           shortcuts: [{
@@ -156,6 +156,7 @@ import Pagination from '@/components/Pagination'
          }
       },
 
+
       //按时间查找
       handleChange(val){
          console.log(val,"选择时间")
@@ -172,6 +173,7 @@ import Pagination from '@/components/Pagination'
       handleFilter(){
         this.GetOrderLogList();       
       },
+
 
       async handleRemove(){
         let that = this;
