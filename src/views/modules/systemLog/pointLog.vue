@@ -102,7 +102,7 @@ import Pagination from '@/components/Pagination'
       }
     },
     mounted () {
-       this.GetpointLog();
+       this.GetpointLog()
     },
     methods: {
       //获取所有的等级
@@ -120,7 +120,7 @@ import Pagination from '@/components/Pagination'
       },
       searchGetMenberData(){
         let that = this;
-        that.GetpointLog();
+        that.GetpointLog()
       }
     }
   }
