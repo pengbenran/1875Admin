@@ -1,28 +1,44 @@
 <template>
   <div class="orderStatistics">
-<!-- 
-      <el-card class="box-card">
-        <el-row :gutter="24">
-            <el-col :span="14" >
-                <div class="filter-container">
-                    <el-input v-model="listQuery.searchName" clearable class="filter-item" style="width: 300px;" placeholder="订单编号/商品名称/订单用户/店铺搜索"/>
-                </div>
-            </el-col>
-            <el-col :span="10"> 
-                <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-                <el-button class="filter-item" type="success" icon="el-icon-download">导出</el-button>
-                <el-button class="filter-item" type="danger" icon="el-icon-delete" @click="handleRemove" :disabled='multipleSelection.length == 0'>删除</el-button>
-            </el-col>
-        </el-row>      
-      </el-card> -->
 
       <el-card class="box-card">
-        <el-table v-loading="listLoading" :data="List" @selection-change="handleSelectionChange" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-          <el-table-column type="selection" width="55"></el-table-column>
+        <el-row :gutter="24">
+            <el-col :span="8" >
+                <div class="filter-container">
+                    <el-input v-model="listQuery.searchName" clearable class="filter-item" style="width: 300px;" placeholder="订单编号/消费者姓名/分润获得者微信名"/>
+                </div>
+            </el-col>
+            <el-col :span="6"> 
+                <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+            </el-col>
+             <el-col :span="10">
+                   <div class="block">
+                    <el-date-picker
+                        v-model="value7"
+                        type="daterange"
+                        align="right"
+                        unlink-panels
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        :picker-options="pickerOptions2">
+                    </el-date-picker>
+                    </div>
+                </el-col>
+        </el-row>      
+      </el-card>
+
+      <el-card class="box-card">
+        <el-table v-loading="listLoading" :data="List" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
           <el-table-column align="center" label="分润日志Id" prop="distributorLogId"/>
-          <el-table-column align="center" label="分享师Id" prop="distributorId"/>
-          <el-table-column align="center" label="用户Id" prop="memberId"/>
           <el-table-column align="center" label="订单编号" prop="orderSn"/>
+          <el-table-column align="center" label="消费者姓名" prop="froms"/>
+          <el-table-column prop="face" label="消费者头像"  align="center">
+            <template slot-scope="scope">
+             <img :src="scope.row.face" :alt="scope.row.name" width="80">
+           </template>
+         </el-table-column>
+          <el-table-column align="center" label="分润获得者微信名" prop="tos"/>
           <el-table-column align="center" label="类型" prop="type">
               <template slot-scope="scope">
                   <el-tag type="success" v-if="scope.row.type == 1">分享师佣金</el-tag>
@@ -38,7 +54,7 @@
           </el-table-column> -->
         </el-table>
       </el-card>
-        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getOrderList" />
+        <Pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="GetOrderLogList" />
   </div>
 </template>
 <script>
@@ -54,7 +70,35 @@ import Pagination from '@/components/Pagination'
           limit: 10,
         },
         total:8,
-        multipleSelection:[],
+        listLoading:false,
+        value7:'',
+        pickerOptions2: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
       }
     },
     mounted () {
@@ -109,11 +153,6 @@ import Pagination from '@/components/Pagination'
              }
             that.listLoading = false;
          }
-      },
-
-      //多选
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
       },
       handleFilter(){},
       async handleRemove(){
