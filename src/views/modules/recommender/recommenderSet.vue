@@ -39,9 +39,14 @@
       </el-form-item>
       <el-form-item label="推荐师分享海报:" :label-width="formLabelWidth" prop="distributorPoster">
         <div class="avatar-uploaders" @click="UpLoadShow(2,1)">
-          <img v-if="setForm.distributorPoster" :src="setForm.distributorPoster" class="avatar">
+          <img v-if="setForm.distributorPoster" :src="setForm.distributorPoster" class="avatar"  style="width:200px;height:200px;">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </div>
+      </el-form-item>
+      <el-form-item label="订单过期时间:" :label-width="formLabelWidth" prop="expireTime">
+        <el-input v-model="setForm.expireTime" auto-complete="off" placeholder="请输入订单过期时间" style="width:220px">
+          <template slot="append">天</template>
+        </el-input>
       </el-form-item>
     <el-button type="primary" @click="onSubmit">保存</el-button>
   </el-form>

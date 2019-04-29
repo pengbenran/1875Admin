@@ -3,7 +3,7 @@
 <!--用户等级新增,编辑分离-->
     <div>
     <section>
-        <el-dialog title="等级新增" :visible.sync="AddShow">
+        <el-dialog title="新增" :visible.sync="AddShow">
         <el-form :model="AddmenBerData"  :rules="AddmenBerDatarules">
             <el-form-item label="等级名称" :label-width="formLabelWidth"  prop="name">
                 <el-input v-model="AddmenBerData.name" placeholder="请输入内容" autocomplete="off"></el-input>
@@ -33,6 +33,35 @@
             <el-form-item label="等级描述" :label-width="formLabelWidth">
                 <el-input   type="textarea" :rows="2" placeholder="请输入内容" v-model="AddmenBerData.description" autocomplete="off"></el-input>
             </el-form-item>
+
+           <el-form-item label="图片" :label-width="formLabelWidth" prop="memberImage">
+            <div class="FlexWarp" >
+                <div @click="SelectClick(1)"> <el-tag>未选中状态时显示图片</el-tag>
+                    <el-upload class="avatar-uploader" :action="postUrl" :headers="token" :on-change="handlePreview"
+                    :show-file-list="false"
+                    :on-success="onSuccess"
+                    :data="resData"
+                    ref="upload"
+                    :limit='1'>
+                        <img v-if="AddmenBerData.memberImage" :src="AddmenBerData.memberImage" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </div>
+                <div @click="SelectClick(2)"> <el-tag>选中状态时显示图片</el-tag>
+                    <el-upload class="avatar-uploader" :action="postUrl" :headers="token" :on-change="handlePreview"
+                    :show-file-list="false"
+                    :on-success="onSuccess"
+                    :data="resData"
+                    ref="ONupload"
+                    :limit='1'>
+                        <img v-if="AddmenBerData.selectImage" :src="AddmenBerData.selectImage" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </div>
+            </div>
+            </el-form-item>
+
+
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="AddShow = false">取 消</el-button>
@@ -43,7 +72,7 @@
     <!--等级添加-->
 
     <section>
-        <el-dialog title="等级新增" :visible.sync="EditShow">
+        <el-dialog title="编辑" :visible.sync="EditShow">
         <el-form :model="EditmenBerData"  :rules="EditmenBerDatarules">
             <el-form-item label="等级名称" :label-width="formLabelWidth"  prop="name">
                 <el-input v-model="EditmenBerData.name" placeholder="请输入内容" autocomplete="off"></el-input>
@@ -73,6 +102,35 @@
             <el-form-item label="等级描述" :label-width="formLabelWidth">
                 <el-input   type="textarea" :rows="2" placeholder="请输入内容" v-model="EditmenBerData.description" autocomplete="off"></el-input>
             </el-form-item>
+
+            <el-form-item label="图片" :label-width="formLabelWidth" prop="memberImage">
+             <div class="FlexWarp" >
+                <div @click="SelectClick(3)"> <el-tag>未选中状态时显示图片</el-tag>
+                    <el-upload class="avatar-uploader" :action="postUrl" :headers="token" :on-change="handleEditPreview"
+                    :show-file-list="false"
+                    :on-success="EditonSuccess"
+                    :data="resData"
+                    ref="Editupload"
+                    :limit='1'>
+                    <img v-if="EditmenBerData.memberImage" :src="EditmenBerData.memberImage" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </div>
+                <div @click="SelectClick(4)"> <el-tag>未选中状态时显示图片</el-tag>
+                    <el-upload class="avatar-uploader" :action="postUrl" :headers="token" :on-change="handleEditPreview"
+                    :show-file-list="false"
+                    :on-success="EditonSuccess"
+                    :data="resData"
+                    ref="OnEditupload"
+                    :limit='1'>
+                    <img v-if="EditmenBerData.selectImage" :src="EditmenBerData.selectImage" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </div>
+             </div>
+
+            </el-form-item>
+
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="EditShow = false">取 消</el-button>
@@ -95,8 +153,19 @@ export default {
         return {
            AddShow:false,
            EditShow:false,
-           AddmenBerData:{},
-           EditmenBerData:{},
+           token:{token:this.$cookie.get('token')},
+           postUrl:window.SITE_CONFIG['baseUrl'] + '/advertisement/uploadFile/imageUpload',
+           resData:{type:2},
+           SelectIndex:0,
+           addImgList:[],
+           AddmenBerData:{
+               memberImage:'',
+               selectImage:''
+           },
+           EditmenBerData:{
+               memberImage:'',
+               selectImage:''
+           },
            formLabelWidth:'120px',
            AddmenBerDatarules:{
              name:[
@@ -176,6 +245,42 @@ export default {
             }).catch(err => {})
         },
 
+        //选择上传
+        SelectClick(index){
+            console.log("选择上传：",index)
+            this.SelectIndex = index
+        },
+
+        //图片上传
+        handlePreview(file) {
+            console.log("你好世界阿萨德",this.SelectIndex)
+            if(this.SelectIndex == 1){
+                this.$refs.upload.submit();
+            }else if(this.SelectIndex == 2){
+                this.$refs.ONupload.submit();
+            }
+        },
+        onSuccess(res){
+           if(res.code == 0){
+                this.SelectIndex == 1 ? this.AddmenBerData.memberImage = res.url : this.AddmenBerData.selectImage = res.url
+           }
+        },
+
+
+        handleEditPreview(file){
+            if(this.SelectIndex == 3){
+               this.$refs.Editupload.submit();
+            }else if(this.SelectIndex == 4){
+                this.$refs.OnEditupload.submit();  
+            }
+
+        },
+        EditonSuccess(res){
+           if(res.code == 0){
+                this.SelectIndex == 3 ? this.EditmenBerData.memberImage = res.url : this.EditmenBerData.selectImage = res.url
+           }           
+        },
+
         //添加显示
         DiaLogShow(val){
             this.AddShow = val;
@@ -192,6 +297,30 @@ export default {
     }
 }
 </script>
-<style scoped>
-
+<style>
+  .avatar-uploader .el-upload{
+    border: 1px dashed #d9d9d9 !important;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .FlexWarp{display: flex;align-items: center;}
+  .FlexWarp div{margin-right: 5px;}
 </style>

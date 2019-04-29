@@ -88,7 +88,8 @@
                 <!-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> -->
             </el-form-item>
             <el-form-item label="商品详情" :label-width="formLabelWidth"  prop="content">
-                <Editor :Value="AddData.content" ref="Editor" @Set_Content="Get_ContentValue"/>
+                <!-- <Editor :Value="AddData.content" ref="Editor" @Set_Content="Get_ContentValue"/> -->
+                <Editors v-model="AddData.content" ref="Editor"/>
                 <p>内容:{{AddData.content}}</p>
             </el-form-item>   
             <el-form-item label="商品缩略图" :label-width="formLabelWidth"  prop="thumbnail">
@@ -166,6 +167,7 @@ import API from "@/api/goods";
 import APIMember from "@/api/member";
 import APISys from "@/api/sys";
 import Editor from "@/components/ueditor/ueditor";
+import Editors from "@/components/Editor/Editor";
 import Uploadimg from "@/components/UpLoadImg/UpLoadImg";
 import Store from "@/store/index"
 import { random_No } from "@/utils/index"
@@ -173,7 +175,7 @@ import { mapActions } from 'vuex';
 
 export default {
     name: 'GoodsCreate',
-    components:{Editor,Uploadimg},
+    components:{Editor,Uploadimg,Editors},
     data () {
         return {
            AddShow:false,
@@ -310,7 +312,7 @@ export default {
             let that = this;
             that.UpAddData(); //对添加数据进行处理
             console.log(that.AddData,"添加时候的数据")
-            that.$refs.Editor.getContent(); //商品详情
+            // that.$refs.Editor.getContent(); //商品详情
             this.$refs['AddruleForm'].validate((valid) => {
             if (valid) {
                 API.AddGoods(that.AddData).then(res => {
@@ -334,10 +336,10 @@ export default {
             this.$router.push('/goods-goodsList')
         },
         
-        //Conten字段赋值
-        Get_ContentValue(data){
-          this.AddData.content = data
-        },
+        // Conten字段赋值
+        // Get_ContentValue(data){
+        //   this.AddData.content = data
+        // },
 
         //获取商品分类
         GetGoodsCatData(){

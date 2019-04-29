@@ -4,13 +4,13 @@
         <el-row :gutter="24">
             <el-col :span="14" >
                 <div class="filter-container">
-                    <el-input v-model="listQuery.searchName" clearable class="filter-item" style="width: 300px;" placeholder="订单编号/商品名称/订单用户/店铺搜索"/>
+                    <el-input v-model="listQuery.searchParam" clearable class="filter-item" style="width: 300px;" placeholder="商品名称/分类名称/店铺搜索"/>
                 </div>
             </el-col>
             <el-col :span="10"> 
                 <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
                 <!-- <el-button class="filter-item" type="success" icon="el-icon-download">导出</el-button> -->
-                <el-button class="filter-item" type="danger" icon="el-icon-delete" @click="handleRemove" :disabled='multipleSelection.length == 0'>批量审核</el-button>
+                <!-- <el-button class="filter-item" type="danger" icon="el-icon-delete" @click="handleRemove" :disabled='multipleSelection.length == 0'>批量审核</el-button> -->
             </el-col>
         </el-row>      
       </el-card>
@@ -18,41 +18,48 @@
       <el-card class="box-card">
         <el-table v-loading="listLoading" :data="List" @selection-change="handleSelectionChange" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column align="center" label="申请Id" prop="applyId"/>
-          <el-table-column align="center" label="会员Id" prop="memberId"/>
-          <el-table-column align="center" label="名称" prop="name"/>
-          <el-table-column align="center" label="类型" prop="status">
+          <el-table-column align="center" label="Id" prop="pennyId"/>
+          <el-table-column align="center" label="商品Id" prop="goodId"/>
+          <el-table-column align="center" label="商品名称" prop="goodName"/>
+          <el-table-column align="center" label="图片" prop="status">
               <template slot-scope="scope">
-                  <el-tag type="success" v-if="scope.row.status == 1">未审核</el-tag>
-                  <el-tag type="success" v-if="scope.row.status == 2">已通过</el-tag>
-                  <el-tag type="success" v-if="scope.row.status == 3">未通过</el-tag>
-                  <el-tag type="success" v-if="scope.row.status == 4">已取消</el-tag>
+                <img :src="scope.row.thumbnail" width="55"/>
               </template>
           </el-table-column>
-          <el-table-column align="center" label="电话" prop="mobile"/>
-          <el-table-column align="center" label="审核人" prop="username"/>
-          <el-table-column align="center" label="推荐人Id" prop="tjunionid"/>
-          <el-table-column align="center" label="申请时间" prop="applyTime"/>
-          <el-table-column align="center" label="审核时间" prop="auditTime"/>
+          <el-table-column align="center" label="库存" prop="inventory"/>
+          <el-table-column align="center" label="店铺名称" prop="shopName"/>
+          <el-table-column align="center" label="已售" prop="sales"/>
+          <el-table-column align="center" label="添加时间" prop="createTime"/>
+          <el-table-column align="center" label="参与人数" prop="finishNumber"/>
+          <el-table-column align="center" label="参与金额" prop="joinAmount"/>
+          <el-table-column align="center" label="时间间隔" prop="timeInterval">
+              <template slot-scope="scope">
+                  <el-tag type="success">{{scope.row.timeInterval}}天</el-tag>
+              </template>
+          </el-table-column>
           <el-table-column align="center" label="操作" width="180" class-name="small-padding fixed-width">
               <template slot-scope="scope">
-              <el-button type="danger" size="mini" @click="deleteList(scope.$index,scope.row)">审核</el-button>
+                <el-button type="primary" size="mini" @click="ShowEdit(scope.$index,scope.row)">编辑</el-button>
+                <el-button type="danger" size="mini" @click="deleteList(scope.$index,scope.row)">删除</el-button>
               </template>
           </el-table-column>
         </el-table>
       </el-card>
         <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="GetDataList" />
+        <ShowDialog ref='ShowDialog'/>
   </div>
 </template>
 <script>
 import API from '@/api/member'
 import API_g from '@/api/goods'
 import Pagination from '@/components/Pagination' 
+import ShowDialog from '../Component/MoneyDialog'
   export default {
-    components:{Pagination},
+    components:{Pagination,ShowDialog},
     data () {
       return {
         List:[],
+        listLoading:false,
         listQuery: {
           page: 1,
           limit: 10,
@@ -83,12 +90,12 @@ import Pagination from '@/components/Pagination'
       },
 
       //删除
-      async deleteList(){
+      async deleteList(index,row){
         let that = this;
         let data;
-        let conRes = await that.$confirm('是否审核通过？','提示',{
-             confirmButtonText:'通过',
-             cancelButtonText:' 不通过',
+        let conRes = await that.$confirm('是否确认删除？','提示',{
+             confirmButtonText:'确认',
+             cancelButtonText:'取消',
              type:'warning'
          }).catch(() => {
              that.$message({
@@ -97,19 +104,15 @@ import Pagination from '@/components/Pagination'
              });
          });
          if(conRes == 'confirm'){
-            data = {applyId:row.applyId,status:2}
-            that.Que(data)
-         }else{
-            data = {applyId:row.applyId,status:3}
+            data = {pennyId:row.pennyId}
             that.Que(data)
          }
-
       },
 
       async Que(data){
          let that = this;
          that.listLoading = true;
-         let res = await API.QueDistributorReview(data).catch(err => {
+         let res = await API_g.DeleteYiMoneyShopList(data).catch(err => {
                  that.$message.error('抱歉，删除失败')
              })
              if(res.code == 0){
@@ -130,73 +133,18 @@ import Pagination from '@/components/Pagination'
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
-      handleFilter(){},
 
-      async handleRemove(){
-        let that = this;
-        //  let res = await 
-        let conRes = await that.$confirm('是否审核通过？','提示',{
-             confirmButtonText:'通过',
-             cancelButtonText:' 不通过',
-             type:'warning'
-         }).catch(() => {
-             that.$message({
-                 type: 'info',
-                 message: '已取消删除'
-             });
-         });
-         if(conRes == 'confirm'){
-            that.QueLists();
-         }else{
-            that.QueList();
-         }
+      //查找
+      handleFilter(){
+         this.GetDataList();
       },
 
-      async QueList(){
-        let that = this;
-        that.listLoading = true;
-          let idsarr = []
-          this.multipleSelection.map(v => {
-              idsarr.push(v.applyId);
-          })
-          let data = {ids:idsarr.join(',')}
-          let res = await API.BatchQueDistributorReview(data).catch(err => {
-              this.$message.error("抱歉,审核失败")
-          })
-          if(res.code == 0){
-              this.GetDataList();
-              that.$message({
-                  message:'审核成功',
-                  type:'success'
-              })
-          }else{
-              this.$message.error("抱歉,审核失败")       
-          }
-          that.listLoading = false;
-      },
+  
 
-      async QueLists(){
-        let that = this;
-        that.listLoading = true;
-          let idsarr = []
-          this.multipleSelection.map(v => {
-              idsarr.push(v.applyId);
-          })
-          let data = {ids:idsarr.join(',')}
-          let res = await API.BatchQueDistributorReviews(data).catch(err => {
-              this.$message.error("抱歉,审核失败")
-          })
-          if(res.code == 0){
-              this.GetDataList();
-              that.$message({
-                  message:'审核成功',
-                  type:'success'
-              })
-          }else{
-              this.$message.error("抱歉,审核失败")       
-          }
-          that.listLoading = false;
-      },
+      //点击编辑
+      ShowEdit(index,row){
+          this.$refs.ShowDialog.EditDiaLogShow(true,row)
+      }
     }
   }
 </script>

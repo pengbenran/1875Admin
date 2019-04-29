@@ -42,7 +42,7 @@
           <el-table-column align="center" label="操作" width="180" class-name="small-padding fixed-width">
               <template slot-scope="scope">
               <el-button type="success" size="mini" @click="deleteList(scope.$index,scope.row)" :disabled='!(scope.row.status == 1)'>
-                  {{scope.row.status == 1 ? '审核':'无需审核'}} 
+                  审核
               </el-button>
               </template>
           </el-table-column>

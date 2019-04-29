@@ -3,8 +3,8 @@
        <section>
             <el-dialog title="转入一分钱抢" :visible.sync="AddShow">
                  <el-form :model="AddData"  :rules="AddDatarules" ref="AddruleForm">
-                    <el-form-item label="参与金额" :label-width="formLabelWidth"  prop="joinNmount">
-                        <el-input v-model="AddData.joinNmount" placeholder="请输入内容" autocomplete="off"></el-input>
+                    <el-form-item label="参与金额" :label-width="formLabelWidth"  prop="joinAmount">
+                        <el-input v-model="AddData.joinAmount" placeholder="请输入内容" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="完成人数" :label-width="formLabelWidth"  prop="finishNumber">
                         <el-input v-model="AddData.finishNumber" placeholder="请输入内容" autocomplete="off"></el-input>
@@ -33,7 +33,7 @@ export default {
             AddData:{
             },
             AddDatarules:{
-                joinNmount:[
+                joinAmount:[
                 { required: true, message: '参与金额', trigger: 'blur' },
                ],
                 finishNumber:[

@@ -29,6 +29,7 @@
     
     data () {
       return {
+        postUrl:window.SITE_CONFIG['baseUrl'] + '/advertisement/uploadFile/imageUpload',
         ue: null,
         ueId: `J_ueditorBox_${new Date().getTime()}`,
         ueContent: '',
@@ -36,8 +37,10 @@
       }
     },
     mounted () {
+      let that = this;
+      console.log("你好路径",that.postUrl)
       this.ue = ueditor.getEditor(this.ueId, {
-        // serverUrl: '', // 服务器统一请求接口路径
+        serverUrl: that.postUrl, // 服务器统一请求接口路径
         zIndex: 3000
       })
       

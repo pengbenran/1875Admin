@@ -3,7 +3,7 @@
 <!--用户等级新增,编辑分离-->
     <div>
     <section>
-        <el-dialog title="等级新增" :visible.sync="AddShow">
+        <el-dialog title="新增" :visible.sync="AddShow">
         <el-form :model="AddDistributorData"  :rules="AddDistributorrules">
             <el-form-item label="等级名称" :label-width="formLabelWidth"  prop="name">
                 <el-input v-model="AddDistributorData.name" placeholder="请输入内容" autocomplete="off"></el-input>
@@ -23,6 +23,34 @@
             <el-form-item label="权益" :label-width="formLabelWidth" prop="description">
                 <el-input   type="textarea" :rows="2" placeholder="请输入内容" v-model="AddDistributorData.description" autocomplete="off"></el-input>
             </el-form-item>
+            <el-form-item label="图片" :label-width="formLabelWidth" prop="distributorImage">
+            <div class="FlexWarp">
+                <div  @click="SelectClick(1)"><el-tag>未选中状态时显示图片</el-tag>
+                    <el-upload class="avatar-uploader" :action="postUrl" :headers="token" :on-change="handlePreview"
+                    :show-file-list="false"
+                    :on-success="onSuccess"
+                    :data="resData"
+                    ref="upload"
+                    :limit='1'>
+                        <img v-if="AddDistributorData.distributorImage" :src="AddDistributorData.distributorImage" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </div>
+                <div  @click="SelectClick(2)"> <el-tag>选中状态时显示图片</el-tag>
+                    <el-upload class="avatar-uploader" :action="postUrl" :headers="token" :on-change="handlePreview"
+                    :show-file-list="false"
+                    :on-success="onSuccess"
+                    :data="resData"
+                    ref="ONupload"
+                    :limit='1'>
+                        <img v-if="AddDistributorData.selectImage" :src="AddDistributorData.selectImage" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                    
+                </div>
+            </div>
+
+            </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="AddShow = false">取 消</el-button>
@@ -33,7 +61,7 @@
     <!--等级添加-->
 
     <section>
-        <el-dialog title="等级新增" :visible.sync="EditShow">
+        <el-dialog title="编辑" :visible.sync="EditShow">
         <el-form :model="EditDistributorData"  :rules="EditDistributorDatarules">
             <el-form-item label="等级名称" :label-width="formLabelWidth"  prop="name">
                 <el-input v-model="EditDistributorData.name" placeholder="请输入内容" autocomplete="off"></el-input>
@@ -53,6 +81,33 @@
             <el-form-item label="权益" :label-width="formLabelWidth" prop="description">
                 <el-input   type="textarea" :rows="2" placeholder="请输入内容" v-model="EditDistributorData.description" autocomplete="off"></el-input>
             </el-form-item>
+            <el-form-item label="图片" :label-width="formLabelWidth" prop="distributorImage">
+             <div class="FlexWarp">
+                 <div @click="SelectClick(3)"><el-tag>未选中状态时显示图片</el-tag>
+                        <el-upload class="avatar-uploader" :action="postUrl" :headers="token" :on-change="handleEditPreview"
+                        :show-file-list="false"
+                        :on-success="EditonSuccess"
+                        :data="resData"
+                        ref="Editupload"
+                        :limit='1'>
+                            <img v-if="EditDistributorData.distributorImage" :src="EditDistributorData.distributorImage" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        </el-upload>
+                 </div>
+                 <div @click="SelectClick(4)"><el-tag>未选中状态时显示图片</el-tag>
+                        <el-upload class="avatar-uploader" :action="postUrl" :headers="token" :on-change="handleEditPreview"
+                        :show-file-list="false"
+                        :on-success="EditonSuccess"
+                        :data="resData"
+                        ref="OnEditupload"
+                        :limit='1'>
+                            <img v-if="EditDistributorData.selectImage" :src="EditDistributorData.selectImage" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        </el-upload>
+                 </div>
+             </div>
+
+            </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="EditShow = false">取 消</el-button>
@@ -65,6 +120,7 @@
 </template>
 <script>
 import API from "@/api/member";
+import Vue from 'vue';
 export default {
     props:{
 
@@ -75,9 +131,19 @@ export default {
         return {
            AddShow:false,
            EditShow:false,
-           AddDistributorData:{},
-           EditDistributorData:{},
+           token:{token:this.$cookie.get('token')},
+           postUrl:window.SITE_CONFIG['baseUrl'] + '/advertisement/uploadFile/imageUpload',
+           SelectIndex:0,
+           AddDistributorData:{
+               distributorImage:'',
+               selectImage:''
+           },
+           EditDistributorData:{
+               distributorImage:'',
+               selectImage:''
+           },
            formLabelWidth:'120px',
+           resData:{type:2},
            AddDistributorrules:{
              name:[
                 { required: true, message: '等级名称', trigger: 'blur' },
@@ -93,6 +159,9 @@ export default {
              ],
              description:[
                 { required: true, message: '请设置权益', trigger: 'blur' },
+             ],
+             distributorImage:[
+                { required: true, message: '请设置图片', trigger: 'blur' },
              ]
            },
            EditDistributorDatarules:{
@@ -110,6 +179,9 @@ export default {
              ],
              description:[
                 { required: true, message: '请设置权益', trigger: 'blur' },
+             ],
+             distributorImage:[
+                { required: true, message: '请设置图片', trigger: 'blur' },
              ]
            }
         }
@@ -143,10 +215,43 @@ export default {
                 that.EditShow = false;
             }).catch(err => {})
         },
+        
+        //选择上传
+        SelectClick(index){
+            this.SelectIndex = index;
+        },
 
         //添加显示
         DiaLogShow(val){
             this.AddShow = val;
+        },
+
+        handlePreview(file) {
+          if(this.SelectIndex == 1){
+             this.$refs.upload.submit();
+          }else if(this.SelectIndex == 2){
+              this.$refs.ONupload.submit(); 
+          }
+
+        },
+
+        onSuccess(res){
+           if(res.code == 0){
+               this.SelectIndex == 1 ? this.AddDistributorData.distributorImage = res.url: this.AddDistributorData.selectImage = res.url
+           }
+        },
+
+        handleEditPreview(){
+          if(this.SelectIndex == 3){
+                 this.$refs.Editupload.submit();
+          }else if(this.SelectIndex == 4){
+                 this.$refs.OnEditupload.submit();
+          }
+        },
+        EditonSuccess(res){
+           if(res.code == 0){
+              this.SelectIndex == 3 ?  this.EditDistributorData.distributorImage = res.url : this.EditDistributorData.selectImage = res.url
+           }     
         },
 
         //编辑显示
@@ -159,6 +264,30 @@ export default {
     }
 }
 </script>
-<style scoped>
-
+<style >
+  .avatar-uploader .el-upload{
+    border: 1px dashed #d9d9d9 !important;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+    .FlexWarp{display: flex;align-items: center;}
+  .FlexWarp div{margin-right: 5px;}
 </style>
