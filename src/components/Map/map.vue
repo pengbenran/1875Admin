@@ -1,6 +1,3 @@
-
-
-
 <template>
     <div>
         <el-dialog title="地址选择" :visible.sync="outerVisible">
@@ -62,7 +59,6 @@ import axios from 'axios'
             init() {
                 let that = this;
                 window.init =function () {
-                    console.log("查看当时经纬度",that.longitude,that.latitude)
                     var center = new window.qq.maps.LatLng(that.latitude,that.longitude);
                     var map =new window.qq.maps.Map(document.getElementById('map'), {
                         // 地图的中心地理坐标。
@@ -80,12 +76,13 @@ import axios from 'axios'
                         this.latitude = event.latLng.getLng();
 
                         //设置标点的位置。
-                        console.log("坐标位置",event.latLng)
                         var marker = new window.qq.maps.Marker({
                             position: event.latLng,
                             map:map
                         });
-
+                        qq.maps.event.addListener(map, 'click', function(event) {
+                            marker.setMap(null);      
+                        });
                         //你解析获取地址信息
                         that.GetWebServerMapInfo(event.latLng)
 
@@ -116,23 +113,21 @@ import axios from 'axios'
                     output:'jsonp',
                     callbackName: 'QQmap',
                 }).then(jsonp => {
-                    console.log("地址搜索",jsonp)
                     if(jsonp.status == 0){
                        that.latitude = jsonp.result.location.lat;
                        that.longitude = jsonp.result.location.lng;
                        that.init();
                     }else{
-                        that.$message.error('地址请求失败');
+                        that.$message.error('请输入详细地址');
                     }
                 }).catch(err => {
-                        that.$message.error('地址请求失败');
+                        that.$message.error('请输入详细地址');
                 })
             },
 
             //根据经纬度获取地址详情
             GetWebServerMapInfo(location){
                 //决定使用Jsonp
-                console.log("6666",location)
                 let that = this;
                 let locationMap = location.lat+','+location.lng;
                 let url = `https://apis.map.qq.com/ws/geocoder/v1/`;
@@ -143,7 +138,7 @@ import axios from 'axios'
                     callbackName: 'QQmap',
                 }).then(jsonp => {
                     if(jsonp.status == 0){
-                        console.log("根据经纬度拿到详细信息",jsonp.result)
+                        alert('您选择的地址为'+jsonp.result.address);
                         that.MapData = jsonp.result
                     }else{
                         that.$message.error('经纬度地址请求失败');
@@ -156,7 +151,6 @@ import axios from 'axios'
             //点击返回数据
             GetMapData(){
                if(this.MapData != ''){
-                   console.log(this.MapData,"点击查看的数据")
                    this.outerVisible = false;
                    this.$emit('PonData',this.MapData);
                }else{
@@ -169,7 +163,6 @@ import axios from 'axios'
                 let that = this;
                 this.outerVisible = val;
                 if(address != ''){
-                    console.log("address",address)
                     that.SeachClick(address)
                 }else{
                     that.getMyLocation();

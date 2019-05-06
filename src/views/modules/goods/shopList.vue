@@ -2,7 +2,7 @@
   <div class="membershipManagerment">
     <el-row :gutter="24">
       <el-col :span="24">
-        <el-button type="success"  icon="el-icon-plus" @click="AddMenberLv">等级新增</el-button>
+        <el-button type="success"  icon="el-icon-plus" @click="AddMenberLv">店铺新增</el-button>
         <el-button type="success"  icon="el-icon-circle-close" :disabled="multipleSelection.length == 0" @click="DeleteBatch">批量删除</el-button>
       </el-col>
       <el-col :span="24" v-loading="loading"  element-loading-text="正在查询中。。。" >
