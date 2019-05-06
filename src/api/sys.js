@@ -29,5 +29,10 @@ export default {
     //获取子级字典数据
     GetChildDictionary:params => {
         return API.GET('/sys/dict/child',params)
+    },
+
+    //获取地铁数据
+    GetSubwayData:params => {
+        return API.GET('/good/good/subway',params)
     }
 }

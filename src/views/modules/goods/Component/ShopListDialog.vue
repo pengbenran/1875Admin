@@ -15,12 +15,12 @@
             </el-form-item> 
             <!-- adCode longitude latitude-->
 
-            <el-form-item label="图片" :label-width="formLabelWidth" prop="shopImg">
+            <!-- <el-form-item label="图片" :label-width="formLabelWidth" prop="shopImg">
                 <div class="avatar-uploader" @click="UpLoadShow(3,1,1)">
                     <img v-if="AddData.shopImg" :src="AddData.shopImg" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </div>
-            </el-form-item>
+            </el-form-item> -->
 
             <el-form-item label="老板名称" :label-width="formLabelWidth"  prop="bossName">
                 <el-input   type="String" placeholder="请输入内容" v-model="AddData.bossName" autocomplete="off"></el-input>
@@ -51,12 +51,12 @@
             </el-form-item> 
             <!-- adCode longitude latitude-->
 
-            <el-form-item label="图片" :label-width="formLabelWidth" prop="shopImg">
+            <!-- <el-form-item label="图片" :label-width="formLabelWidth" prop="shopImg">
                 <div class="avatar-uploader" @click="UpLoadShow(3,1,1)">
                     <img v-if="EdiData.shopImg" :src="EdiData.shopImg" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </div>
-            </el-form-item>
+            </el-form-item> -->
 
             <el-form-item label="老板名称" :label-width="formLabelWidth"  prop="bossName">
                 <el-input   type="String" placeholder="请输入内容" v-model="EdiData.bossName" autocomplete="off"></el-input>
@@ -146,14 +146,14 @@ export default {
            listQuery:{page:1,limit:9},
            search:'',
            AddData:{
-               shopImg:'',
+              
                address:'',
                adCode:'',
                longitude:'',
                latitude:''
            },
            EdiData:{
-               shopImg:'',
+               
                address:'',
                adCode:'',
                longitude:'',
@@ -167,9 +167,7 @@ export default {
              address:[
                 { required: true, message: '请设置地址', trigger: 'blur' },
              ],
-             shopImg:[
-                { required: true, message: '请设置商品图片', trigger: 'blur' },
-             ],
+          
              bossName:[
                 { required: true, message: '请设置老板名称', trigger: 'blur' },
              ],
@@ -184,9 +182,7 @@ export default {
              address:[
                 { required: true, message: '请设置地址', trigger: 'blur' },
              ],
-             shopImg:[
-                { required: true, message: '请设置商品图片', trigger: 'blur' },
-             ],
+       
              bossName:[
                 { required: true, message: '请设置老板名称', trigger: 'blur' },
              ],
