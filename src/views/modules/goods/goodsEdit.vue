@@ -18,22 +18,22 @@
                 <el-input v-model="AddData.title" placeholder="请输入商品标题" autocomplete="off"></el-input>
             </el-form-item>   
             <el-form-item label="展示价格" :label-width="formLabelWidth"  prop="showPrice">
-                <el-input v-model="AddData.showPrice" placeholder="请输入展示价格" autocomplete="off">
+                <el-input type="number"  v-model="AddData.showPrice" placeholder="请输入展示价格" autocomplete="off">
                     <template slot="append">元</template>
                 </el-input>
             </el-form-item>
             <el-form-item label="成本价" :label-width="formLabelWidth"  prop="cost">
-                <el-input v-model="AddData.cost" placeholder="请输入成本价" autocomplete="off">
+                <el-input type="number"  v-model="AddData.cost" placeholder="请输入成本价" autocomplete="off">
                     <template slot="append">元</template>
                 </el-input>
             </el-form-item> 
             <el-form-item label="价格" :label-width="formLabelWidth"  prop="price">
-                <el-input v-model="AddData.price" placeholder="请输入价格" autocomplete="off">
+                <el-input type="number"  v-model="AddData.price" placeholder="请输入价格" autocomplete="off">
                     <template slot="append">元</template>
                 </el-input>
             </el-form-item>  
             <el-form-item label="排序" :label-width="formLabelWidth"  prop="sort">
-                <el-input v-model="AddData.sort" placeholder="请输入排序" autocomplete="off"></el-input>
+                <el-input type="number"  v-model="AddData.sort" placeholder="请输入排序" autocomplete="off"></el-input>
             </el-form-item>                                          
             <el-form-item label="是否热销" :label-width="formLabelWidth"  prop="hot">
                 <el-radio v-model="AddData.hot" label="1">是</el-radio>
@@ -43,9 +43,9 @@
                 <el-radio v-model="AddData.status" label="1">立即上架</el-radio>
                 <el-radio v-model="AddData.status" label="2">暂不上架</el-radio>
             </el-form-item>
-            <el-form-item label="分类ID" :label-width="formLabelWidth"  prop="catId">
+            <!-- <el-form-item label="分类ID" :label-width="formLabelWidth"  prop="catId">
                 <el-input v-model="AddData.catId" placeholder="请输入分类ID" autocomplete="off"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="分类名称" :label-width="formLabelWidth"  prop="catName">
                 <el-select v-model="AddData.catName1" clearable placeholder="请选择" @change = 'changeCatName'>
                     <el-option v-for="item in goodsCatRoot" :key="item.value" :label="item.name" :value="item.catId"></el-option>
@@ -67,13 +67,12 @@
                 </div>
                 <!-- <el-input v-model="AddData.subway" placeholder="请输入内容" autocomplete="off"></el-input> -->
             </el-form-item> 
-            <el-form-item label="付款类型" :label-width="formLabelWidth"  prop="payType">
+            <!-- <el-form-item label="付款类型" :label-width="formLabelWidth"  prop="payType">
                 <el-radio v-model="AddData.payType" label="1">微信支付</el-radio>
-                <el-radio v-model="AddData.payType" label="2">余额支付</el-radio>
-                <!-- <  !-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> --> 
-            </el-form-item>
+                <el-radio v-model="AddData.payType" label="2">余额支付</el-radio>> 
+            </el-form-item> -->
             <el-form-item label="积分抵扣金额" :label-width="formLabelWidth"  prop="pointAmount">
-                <el-input v-model="AddData.pointAmount" placeholder="请输入内容" autocomplete="off">
+                <el-input  type="number"  v-model="AddData.pointAmount" placeholder="请输入内容" autocomplete="off">
                     <template slot="append">元</template>
                 </el-input>
             </el-form-item> 
@@ -88,7 +87,8 @@
                 <!-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> -->
             </el-form-item>
             <el-form-item label="商品详情" :label-width="formLabelWidth"  prop="content">
-                <Editor ref="Editor" @Set_Content="Get_ContentValue"/>
+                  <!-- <Editor :Value="AddData.content" ref="Editor" @Set_Content="Get_ContentValue"/> -->
+                <Editors v-model="AddData.content" ref="Editor"/>
             </el-form-item>   
             <el-form-item label="商品缩略图" :label-width="formLabelWidth"  prop="thumbnail">
                 <div class="avatar-uploader" @click="UpLoadShow(1,1)"><img v-if="AddData.thumbnail" :src="AddData.thumbnail" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></div>
@@ -108,13 +108,13 @@
                 </div>
             </el-form-item>
             <el-form-item label="展示销售量" :label-width="formLabelWidth"  prop="showSales">
-                <el-input v-model="AddData.showSales" placeholder="请输入内容" autocomplete="off"></el-input>
+                <el-input type="number"  v-model="AddData.showSales" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>   
             <el-form-item label="真实的销售量" :label-width="formLabelWidth"  prop="sales">
-                <el-input v-model="AddData.sales" placeholder="请输入内容" autocomplete="off"></el-input>
+                <el-input type="number"  v-model="AddData.sales" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="库存" :label-width="formLabelWidth"  prop="inventory">
-                <el-input v-model="AddData.inventory" placeholder="请输入内容" autocomplete="off"></el-input>
+                <el-input type="number"  v-model="AddData.inventory" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="商店ID" :label-width="formLabelWidth"  prop="shopId">
                 <el-select v-model="AddData.shopId" placeholder="请选择">
@@ -124,28 +124,27 @@
             <el-form-item label="是否可以使用红包" :label-width="formLabelWidth"  prop="redPacket">
                 <el-radio v-model="AddData.redPacket" label="1">是</el-radio>
                 <el-radio v-model="AddData.redPacket" label="2">否</el-radio>
-                <!-- <el-alert style="padding:0px" title="注：根级也就是设置初始等级" type="success"></el-alert> -->
             </el-form-item>
             <el-form-item label="分享获得佣金" :label-width="formLabelWidth"  prop="fixedCommission">
                 <div class="YongMoney" v-for="(item,index) in MemberDataList" :index ='index' :key="item.distributorLvId">
                     <el-tag style="margin-right:12px;">{{item.name}}</el-tag>
-                    <el-input v-model="item.value" placeholder="请输入内容" autocomplete="off">
+                    <el-input type="number"  v-model="item.value" placeholder="请输入内容" autocomplete="off">
                         <template slot="append">元</template>
                     </el-input>
                 </div>
             </el-form-item>
             <el-form-item label="购买获取积分" :label-width="formLabelWidth"  prop="buyIntegral">
-                <el-input v-model="AddData.buyIntegral" placeholder="请输入内容" autocomplete="off">
+                <el-input type="number"  v-model="AddData.buyIntegral" placeholder="请输入内容" autocomplete="off">
                     <template slot="append">分</template>
                 </el-input>
             </el-form-item>
             <el-form-item label="分享获得积分" :label-width="formLabelWidth"  prop="shareIntegral">
-                <el-input v-model="AddData.shareIntegral" placeholder="请输入内容" autocomplete="off">
+                <el-input type="number"  v-model="AddData.shareIntegral" placeholder="请输入内容" autocomplete="off">
                     <template slot="append">分</template>
                 </el-input>
             </el-form-item>
             <el-form-item label="上下线佣金" :label-width="formLabelWidth"  prop="lineCommission">
-                <el-input v-model="AddData.lineCommission" placeholder="请输入内容" autocomplete="off"></el-input>
+                <el-input type="number"  v-model="AddData.lineCommission" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -164,7 +163,7 @@
 import API from "@/api/goods";
 import APIMember from "@/api/member";
 import APISys from "@/api/sys";
-import Editor from "@/components/ueditor/ueditor";
+import Editors from "@/components/Editor/Editor";
 import Uploadimg from "@/components/UpLoadImg/UpLoadImg";
 import Store from "@/store/index"
 import { random_No } from "@/utils/index"
@@ -172,7 +171,7 @@ import { mapActions } from 'vuex';
 
 export default {
     name: 'GoodsCreate',
-    components:{Editor,Uploadimg},
+    components:{Editors,Uploadimg},
     data () {
         return {
            AddShow:false,
@@ -261,7 +260,7 @@ export default {
       this.AddData.imagesList = this.AddData.images.split(',');
       this.$set(this.AddData,'catName1','');
       this.$set(this.AddData,'subwayList',[{value:'',options:[]}]);
-      this.$refs.Editor.setContent(this.AddData.content);  //content赋值
+    //   this.$refs.Editor.setContent(this.AddData.content);  //content赋值
       await this.GetDictionaryData(); //获取字典数据
       this.goodsCatOptionValue();
       console.log(this.AddData,"查看整理后的数据",this.ShopDataList)
@@ -271,7 +270,7 @@ export default {
         UpData(){
             let that = this;
             that.UpAddData();
-            that.$refs.Editor.getContent(); //商品详情
+            // that.$refs.Editor.getContent(); //商品详情
             this.$refs['AddruleForm'].validate((valid) => {
             if (valid) {
                 API.UpdataGoods(that.AddData).then(res => {
@@ -383,10 +382,10 @@ export default {
                 that.DictionaryDataList = Object.assign([],Store.state.good.DictionaryDataList);
                 that.AddData.subwayList[0].options = that.DictionaryDataList
             }else{
-                APISys.DictionaryList({page: 1,limit: 20}).then(res =>{
+                APISys.GetSubwayData().then(res =>{
                     console.log("这里是字典数据",res)
                     if(res != undefined){
-                        that.DictionaryDataList = res.rows;
+                        that.DictionaryDataList = res.subway;
                         console.log(that.AddData.subwayList,"查看一下")
 
                         that.AddData.subwayList[0].options = that.DictionaryDataList

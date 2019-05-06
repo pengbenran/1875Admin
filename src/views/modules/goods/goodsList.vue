@@ -8,7 +8,7 @@
       <el-col :span="24" v-loading="loading"  element-loading-text="正在查询中。。。" >
         <el-table ref="multipleTable" :data="GoodsList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column align="center" prop="sn"  label="商品编号"></el-table-column>
+          <el-table-column align="center" prop="goodId"  label="商品ID"></el-table-column>
           <el-table-column align="center" prop="thumbnail"  label="商品图片">
             <template slot-scope="scope">
                <img :src="scope.row.thumbnail" width="80">
