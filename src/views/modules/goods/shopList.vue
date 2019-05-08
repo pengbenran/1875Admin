@@ -9,11 +9,11 @@
         <el-table ref="multipleTable" :data="shopList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column align="center" prop="shopName"  label="店铺名称"></el-table-column>
-          <el-table-column align="center" prop="shopImg"  label="店铺图片">
+          <!-- <el-table-column align="center" prop="shopImg"  label="店铺图片">
              <template slot-scope="scope">
                 <img :src="scope.row.shopImg" width="60"/>
              </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column align="center" prop="bossName" label="老板名称"></el-table-column>
           <el-table-column align="center" prop="bossPhone" label="老板电话"></el-table-column>
           <el-table-column  align="center" label="操作" width="220" class-name="small-padding fixed-width">

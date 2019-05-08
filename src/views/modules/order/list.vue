@@ -45,7 +45,7 @@
             <el-table-column align="center" label="商品价格" prop="goodsAmount"/>
             <el-table-column align="center" label="支付金额" prop="needPayMoney"/>
             <el-table-column align="center" label="获得积分" prop="gainedpoint"/>
-            <el-table-column align="center" label="推荐师优惠金额" prop="recommend"/>
+            <el-table-column align="center" label="分享师优惠金额" prop="recommend"/>
             <el-table-column align="center" label="余额支付金额" prop="balance"/>
             <el-table-column align="center" label="订单状态" prop="status">
                 <template slot-scope="scope">

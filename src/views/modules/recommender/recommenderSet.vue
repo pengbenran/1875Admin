@@ -1,7 +1,7 @@
 <template>
   <div class="setting">
     <el-form ref="form" :model="setForm">
-      <el-form-item label="推荐师招募管理:">
+      <el-form-item label="分享师招募管理:">
 
         <el-form-item label="分销员审核" label-width="100px">
           <el-radio-group v-model="setForm.distributorStatus">

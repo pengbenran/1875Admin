@@ -8,7 +8,7 @@
       <el-col :span="24" v-loading="loading"  element-loading-text="正在查询中。。。" >
         <el-table ref="multipleTable" :data="distributorLvList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column align="center" prop="distributorLvId"  label="推荐师等级Id"></el-table-column>
+          <el-table-column align="center" prop="distributorLvId"  label="分享师等级Id"></el-table-column>
           <el-table-column align="center" prop="name"  label="等级名称"></el-table-column>
           <el-table-column align="center" prop="defaultStatus" label="是否为默认等级">
             <template slot-scope="scope">
@@ -16,7 +16,7 @@
             </template>
           </el-table-column>
           <el-table-column align="center" prop="inviteNumber" label="升级所需人数" ></el-table-column>
-          <el-table-column align="center" prop="description" label="推荐师权益" ></el-table-column>
+          <el-table-column align="center" prop="description" label="分享师权益" ></el-table-column>
           <el-table-column align="center" prop="distributorImage" label="图片" >
              <template slot-scope="scope">
                 <img :src="scope.row.distributorImage" />

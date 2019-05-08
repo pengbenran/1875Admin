@@ -406,16 +406,13 @@ export default {
         //获取字典数据
         GetDictionaryData(){
             let that = this;
-            console.log("紧靠你好世界")
             if(Store.state.good.DictionaryDataList.length > 0){
                 that.DictionaryDataList = Store.state.good.DictionaryDataList;
                 that.AddData.subwayList[0].options = that.DictionaryDataList;
             }else{
-                console.log("紧靠你好世界12312")
                 APISys.GetSubwayData().then(res =>{
                     if(res != undefined){
                         that.DictionaryDataList = res.subway;
-                        console.log("查看一下数据1111",that.DictionaryDataList)
                         that.AddData.subwayList[0].options = that.DictionaryDataList
                         that.Set_DictionaryList(Object.assign({},that.DictionaryDataList))
                     }else{

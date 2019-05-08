@@ -7,8 +7,8 @@
        <el-col :span="24"  v-loading="loading"  element-loading-text="正在查询中。。。" >
          <el-table ref="multipleTable" :data="DistributorList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="distributorId" label="推荐师Id"  align="center"></el-table-column>
-          <el-table-column prop="memberName" label="推荐师名称"  align="center"></el-table-column>
+          <el-table-column prop="distributorId" label="分享师Id"  align="center"></el-table-column>
+          <el-table-column prop="memberName" label="分享师名称"  align="center"></el-table-column>
           <el-table-column prop="lvName" label="等级"  align="center"></el-table-column>
           <el-table-column prop="balance" label="余额"  align="center"></el-table-column>
           <el-table-column prop="total" label="返佣总额"  align="center"></el-table-column>

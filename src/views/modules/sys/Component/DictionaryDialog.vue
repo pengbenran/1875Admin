@@ -8,7 +8,10 @@
             <el-form-item label="标签名" :label-width="formLabelWidth"  prop="name">
                 <el-input v-model="AddData.name" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="数据值" :label-width="formLabelWidth"  prop="value">
+            <el-form-item label="选择开通城市" :label-width="formLabelWidth"  prop="name" v-if="typeName == 'City'">
+                 <SelectCity @CityData='CityData'/>
+            </el-form-item>
+            <el-form-item label="数据值" :label-width="formLabelWidth"  prop="value" v-if="typeName != 'City'">
                 <el-input v-model="AddData.value" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="类型" :label-width="formLabelWidth"  prop="type">
@@ -17,7 +20,6 @@
             <el-form-item label="排序" :label-width="formLabelWidth"  prop="sort">
                 <el-input v-model="AddData.sort" type='number' placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item>
-
             <el-form-item label="描述" :label-width="formLabelWidth">
                 <el-input   type="textarea" :rows="2" placeholder="请输入内容" v-model="AddData.description" autocomplete="off"></el-input>
             </el-form-item>
@@ -102,14 +104,16 @@
 <script>
 import API from "@/api/sys";
 import Pagination from '@/components/Pagination'
+import SelectCity from '@/components/SelectCity/linkage'
 export default {
-    components:{Pagination},
+    components:{Pagination,SelectCity},
     data () {
         return {
            AddShow:false,
            EditShow:false,
            DataListShow:false,
            listLoading:false,
+           typeName:'',
            ImgType:0, //设置图片类型
            proportion:1, //设置图片比例
            IMAGE_iNDEX:1, //是删除还是编辑的标识
@@ -122,6 +126,7 @@ export default {
            AddData:{
                parentId:'',
                Pname:'',
+               value:''
            },
            EdiData:{
 
@@ -219,6 +224,11 @@ export default {
             })
         },
 
+        CityData(val){
+         console.log("拿到城市的数据",val)
+         this.AddData.value = val;
+        },
+
         //删除子级的数据
         DeleteData(index,row){
             let that = this;
@@ -255,6 +265,9 @@ export default {
             if(row != undefined){ //当添加子级时会传入当前条的信息 赋值父级ID
                 this.AddData.Pname = row.name
                 this.AddData.parentId = row.id
+                this.typeName = row.type;
+            }else{
+                this.typeName = '';
             } 
             this.AddShow = val;
         },

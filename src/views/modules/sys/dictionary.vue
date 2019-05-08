@@ -132,7 +132,6 @@ import Pagination from '@/components/Pagination'
 
       //添加子级
       ClickCommand(e,row){
-         console.log("查看序列",e,row)
          if(e == 1){
            this.$refs.DiaLogShow.DiaLogShow(true,row)
          }else{

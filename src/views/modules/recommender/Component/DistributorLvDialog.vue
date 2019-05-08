@@ -16,7 +16,7 @@
                 <el-input type="number" v-model="AddDistributorData.inviteNumber" placeholder="请输入内容" autocomplete="off"></el-input>
                 <el-alert style="padding:0px" title="注：设置升级需要多少人" type="success"></el-alert>
             </el-form-item>
-            <el-form-item label="推荐师权重" :label-width="formLabelWidth" prop="weight">
+            <el-form-item label="分享师权重" :label-width="formLabelWidth" prop="weight">
                 <el-input type="number" v-model="AddDistributorData.weight" placeholder="请输入内容" autocomplete="off"></el-input>
                 <el-alert style="padding:0px" title="注：设置越大代表等级越高" type="success"></el-alert>
             </el-form-item>
@@ -74,7 +74,7 @@
                 <el-input v-model="EditDistributorData.inviteNumber" placeholder="请输入内容" autocomplete="off"></el-input>
                 <el-alert style="padding:0px" title="注：设置升级需要多少人" type="success"></el-alert>
             </el-form-item>
-            <el-form-item label="推荐师权重" :label-width="formLabelWidth" prop="weight">
+            <el-form-item label="分享师权重" :label-width="formLabelWidth" prop="weight">
                 <el-input v-model="EditDistributorData.weight" placeholder="请输入内容" autocomplete="off"></el-input>
                 <el-alert style="padding:0px" title="注：设置越大代表等级越高" type="success"></el-alert>
             </el-form-item>
