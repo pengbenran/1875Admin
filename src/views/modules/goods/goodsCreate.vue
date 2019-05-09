@@ -344,11 +344,13 @@ export default {
         GetGoodsCatData(){
             let that = this;
             let arr = [];
-            if(Store.state.good.goodsCat.length > 0){
-                that.goodsCat = Store.state.good.goodsCat
-                that.goodsCatRoot = that.goodsCat.filter(f => f.root == 1)
-            }else{
-                let data = { page: 1,limit: 20}
+            // if(Store.state.good.goodsCat.length > 0){
+            //     that.goodsCat = Store.state.good.goodsCat
+            //     that.goodsCatRoot = that.goodsCat.filter(f => f.root == 1)
+            // }else{
+        
+            // }
+            let data = { page: 1,limit: 20}
                 API.GetGoodsCat(data).then(res => {
                     if(res != undefined){
                         that.goodsCat = res.rows;
@@ -357,8 +359,7 @@ export default {
                     }else{
                         that.$message.error('商品列表并未请求到');
                     }
-                }).catch(err =>{});
-            }
+             }).catch(err =>{});
         },
 
         //获取所有的店铺列表

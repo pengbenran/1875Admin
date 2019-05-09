@@ -4,12 +4,11 @@
         <el-row :gutter="24">
             <el-col :span="14" >
                 <div class="filter-container">
-                    <el-input v-model="listQuery.searchName" clearable class="filter-item" style="width: 300px;" placeholder="订单编号/商品名称/订单用户/店铺搜索"/>
+                    <el-input v-model="listQuery.searchName" clearable class="filter-item" style="width: 300px;" placeholder="会员Id/会员名称/审核状态"/>
                 </div>
             </el-col>
             <el-col :span="10"> 
                 <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-                <!-- <el-button class="filter-item" type="success" icon="el-icon-download">导出</el-button> -->
                 <el-button class="filter-item" type="danger" icon="el-icon-delete" @click="handleRemove" :disabled='multipleSelection.length == 0'>批量审核</el-button>
             </el-col>
         </el-row>      
@@ -36,12 +35,13 @@
           <el-table-column align="center" label="审核时间" prop="auditTime"/>
           <el-table-column align="center" label="操作" width="180" class-name="small-padding fixed-width">
               <template slot-scope="scope">
-              <el-button type="danger" size="mini" @click="deleteList(scope.$index,scope.row)">审核</el-button>
+                <el-button type="primary" size="mini" @click="examine(scope.$index,scope.row)">审核</el-button>
+              <el-button type="danger" size="mini" @click="deleteList(scope.$index,scope.row)">删除</el-button>
               </template>
           </el-table-column>
         </el-table>
       </el-card>
-        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getOrderList" />
+        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="GetDataList" />
   </div>
 </template>
 <script>
@@ -52,6 +52,7 @@ import Pagination from '@/components/Pagination'
     data () {
       return {
         List:[],
+        listLoading:false,
         listQuery: {
           page: 1,
           limit: 10,
@@ -68,21 +69,41 @@ import Pagination from '@/components/Pagination'
         let that = this;
         that.listLoading = true;
         API.GetDistributorReview(this.listQuery).then(res => {
-          console.log("查看所有的数据",res)
           if(res != undefined){
             that.List = res.rows;
             that.total = res.total;
           }else{
-            that.$message.error('抱歉，删除失败')            
+            that.$message.error('抱歉,获取数据失败')            
           }
           that.listLoading = false;
         }).catch(err => {
-            that.$message.error('抱歉，删除失败')   
+            that.$message.error('抱歉,获取数据失败')   
         })
       },
-
-      //删除
-      async deleteList(){
+      // 删除审核记录
+      async deleteList(index,row){
+        let that=this
+        let conRes = await that.$confirm('是否删除该条记录','提示',{
+             confirmButtonText:'删除',
+             cancelButtonText:'取消',
+             type:'warning'
+         })
+         if(conRes == 'confirm'){
+           let params={}
+           params.applyId=row.applyId
+           API.deleteDistributorReview(params).then(function(res){
+            if(res.code==0){
+              that.$message({
+               message:'删除成功',
+               type:'success'
+             })
+              that.GetDataList()
+            }   
+           })
+         }     
+      },
+      //审核
+      async  examine(index,row){
         let that = this;
         let data;
         let conRes = await that.$confirm('是否审核通过？','提示',{
@@ -92,11 +113,11 @@ import Pagination from '@/components/Pagination'
          }).catch(() => {
              that.$message({
                  type: 'info',
-                 message: '已取消删除'
+                 message: '审核已拒绝'
              });
          });
          if(conRes == 'confirm'){
-            data = {applyId:row.applyId,status:1}
+            data = {applyId:row.applyId,status:2}
             that.Que(data)
          }else{
             data = {applyId:row.applyId,status:3}
@@ -109,28 +130,24 @@ import Pagination from '@/components/Pagination'
          let that = this;
          that.listLoading = true;
          let res = await API.QueDistributorReview(data).catch(err => {
-                 that.$message.error('抱歉，删除失败')
+                 that.$message.error('审核失败')
              })
              if(res.code == 0){
                  that.GetDataList();
                  that.$message({
-                     message:'删除成功',
+                     message:'审核成功',
                      type:'success'
                  })
              }else{
-                 that.$message.error('抱歉，删除失败')
+                 that.$message.error('审核失败')
              }
           that.listLoading = false;
       },
-
-
-
       //多选
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
       handleFilter(){},
-
       async handleRemove(){
         let that = this;
         //  let res = await 
@@ -141,7 +158,7 @@ import Pagination from '@/components/Pagination'
          }).catch(() => {
              that.$message({
                  type: 'info',
-                 message: '已取消删除'
+                 message: '已审核'
              });
          });
          if(conRes == 'confirm'){

@@ -258,12 +258,12 @@ export default {
       this.AddData.shopId = parseInt(this.AddData.shopId);
       this.AddData.invalidTime = new Date(this.AddData.invalidTime).getTime();
       this.AddData.imagesList = this.AddData.images.split(',');
+    //   this.AddData.subway = this
       this.$set(this.AddData,'catName1','');
       this.$set(this.AddData,'subwayList',[{value:'',options:[]}]);
     //   this.$refs.Editor.setContent(this.AddData.content);  //content赋值
       await this.GetDictionaryData(); //获取字典数据
       this.goodsCatOptionValue();
-      console.log(this.AddData,"查看整理后的数据",this.ShopDataList)
     },
     methods: {
         ...mapActions('good',['Get_GoodsCatData','Set_MemberLvList','Set_ShopList','Set_DictionaryList']),
@@ -291,7 +291,6 @@ export default {
 
          //Conten字段赋值
         Get_ContentValue(data){
-          console.log("过来了吗",data)
           this.AddData.content = data
         },
         
@@ -375,22 +374,18 @@ export default {
             }
         },
 
-        //获取字典数据
+        //获取地铁的数据
         GetDictionaryData(){
             let that = this;
             if(Store.state.good.DictionaryDataList.length > 0){
                 that.DictionaryDataList = Object.assign([],Store.state.good.DictionaryDataList);
                 that.AddData.subwayList[0].options = that.DictionaryDataList
+                console.log("打印一下拿到的数据",that.AddData.subwayList[0].options )
             }else{
                 APISys.GetSubwayData().then(res =>{
-                    console.log("这里是字典数据",res)
                     if(res != undefined){
                         that.DictionaryDataList = res.subway;
-                        console.log(that.AddData.subwayList,"查看一下")
-
                         that.AddData.subwayList[0].options = that.DictionaryDataList
-                        
-                        console.log("打印一下此时的数据",that.AddData.subwayList)
                         that.Set_DictionaryList(Object.assign([],that.DictionaryDataList))
                     }else{
                         that.$message.error('未获取到字典数据');
@@ -404,7 +399,6 @@ export default {
         //根据地铁数据整理
         subwayChangeSelect(e){
             let that = this;
-            console.log("进来了吗")
             APISys.GetChildDictionary(Object.assign({},{page: 1,limit: 100},{parentId:e})).then(res =>{
                 if(res != undefined && res.rows.length > 0){
                     let data = {
@@ -531,4 +525,5 @@ export default {
 .YongMoney{
     display: flex;align-items: center;
 }
+.FlexWarp{display: flex;align-items: center;}
 </style>

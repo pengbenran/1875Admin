@@ -112,6 +112,10 @@ export default {
    QueDistributorReview:params => {
     return API.PUT('/member/distributorApply/status',params)
    },
+    //删除审核记录
+   deleteDistributorReview:params => {
+    return API.DELETE('/member/distributorApply/remove',params)
+   },
 
    //批量审核通过
    BatchQueDistributorReviews:params => {

@@ -52,8 +52,7 @@ import Pagination from '@/components/Pagination'
       //获取所有的等级
       GetDistributorList(){
         let that = this;
-        API.getDistributorList(Object.assign({},that.listQuery)).then(res => {
-          console.log("成功的打印",res)
+        API.getDistributorList(Object.assign({},that.listQuery)).then(res => { 
           if(res != undefined){
             that.DistributorList = res.rows;
             that.total = res.total;
