@@ -40,6 +40,8 @@
               <template slot-scope="scope">
                   <el-tag type="success" v-if="scope.row.type == 1">分享师佣金</el-tag>
                   <el-tag type="success" v-if="scope.row.type == 2">上下线佣金</el-tag>
+                  <el-tag type="success" v-if="scope.row.type == 3">抵扣</el-tag>
+                  <el-tag type="success" v-if="scope.row.type == 4">提现</el-tag>
               </template>
           </el-table-column>
           <el-table-column align="center" label="分润金额" prop="amount"/>

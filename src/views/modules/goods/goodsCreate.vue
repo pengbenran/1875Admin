@@ -394,7 +394,6 @@ export default {
                             return Mres;
                         });
                         that.Set_MemberLvList(that.MemberDataList)
-                        console.log(that.MemberDataList,"会员等级")
                     }else{
                         that.$message.error('分享师等级列表并未请求到');
                     }
@@ -429,7 +428,6 @@ export default {
         subwayChangeSelect(e){
             let that = this;
             APISys.GetChildDictionary(Object.assign({},{page: 1,limit: 100},{parentId:e})).then(res =>{
-                console.log("查看字典自己数据",res)
                 if(res != undefined && res.rows.length > 0){
                     let data = {
                         value:'',
@@ -453,7 +451,6 @@ export default {
                 MenberLv.push(Mres.distributorLvId+'|'+Mres.value);
             })
             that.AddData.fixedCommission = MenberLv.join(',')
-            console.log(that.fixedCommission,"进来处理数据了吗")
         },
 
         //生成编号

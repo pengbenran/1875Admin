@@ -57,7 +57,7 @@
             <el-form-item label="区域" :label-width="formLabelWidth"  prop="region">
                 <el-input v-model="AddData.region" placeholder="请输入内容" autocomplete="off"></el-input>
             </el-form-item> 
-            <el-form-item label="地铁" :label-width="formLabelWidth"  prop="subway">
+            <el-form-item label="地铁" :label-width="formLabelWidth"  prop="subway" style="display:none">
                 <div class="FlexWarp">
                 <div v-for="(item,index) in AddData.subwayList" :key="index" :index='index' style="margin-right:4px;">
                     <el-select v-model="item.value" placeholder="请选择"  @change='subwayChangeSelect' >
@@ -65,7 +65,6 @@
                     </el-select>
                 </div>
                 </div>
-                <!-- <el-input v-model="AddData.subway" placeholder="请输入内容" autocomplete="off"></el-input> -->
             </el-form-item> 
             <!-- <el-form-item label="付款类型" :label-width="formLabelWidth"  prop="payType">
                 <el-radio v-model="AddData.payType" label="1">微信支付</el-radio>
@@ -215,7 +214,7 @@ export default {
              pointAmount:[ { required: true, message: '请设置积分抵扣金额', trigger: 'blur' },],
              invalidTime:[ { required: true, message: '请设置失效时间', trigger: 'blur' },],
              goodType:[{ required: true, message: '请设置商品类型', trigger: 'blur' },],
-             subway:[{ required: true, message: '请设置地铁信息', trigger: 'blur' },],
+            //  subway:[{ required: true, message: '请设置地铁信息', trigger: 'blur' },],
              inventory:[{ required: true, message: '请设置库存信息', trigger: 'blur' },]
            },
            goodsCat:[],
